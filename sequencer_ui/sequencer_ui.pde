@@ -5,31 +5,36 @@ import netP5.*;
 OscP5 oscP5;
 NetAddress myRemoteLocation;
 
-
+//initialize all ButtonLists
 ArrayList rects;
 ArrayList hiht;
 ArrayList snare;
 ArrayList mute;
 ArrayList perc;
 
+//initialize single Buttons
 ButtonRec clear;
 ButtonRec pause;
 AmpControl up;
 AmpControl down;
 Amp amp;
+
 void setup() {
   background(#282a36);
-  frameRate(4);
   size(490,400);
+  frameRate(4);
+  
+  //OSC initialize
   oscP5 = new OscP5(this,4560);
   myRemoteLocation = new NetAddress("127.0.0.1",4560);
   
+  //initialize all ButtonLists
   rects = new ArrayList();
   hiht = new ArrayList();
   snare = new ArrayList();
   perc = new ArrayList();
-  
   mute = new ArrayList();
+  
   //Clear all Button
   clear = new ButtonRec(430, 10, 50, 20);
   //Pause Button
@@ -39,7 +44,8 @@ void setup() {
   
   clear.c = #ff5555;
   pause.c = #50fa7b;
-  //Initiate all Recs
+  
+  //Add all Recs to RecLists
   int pos = 10;
   for(int i = 0; i < 16; i++) { 
     rects.add(new Rec(pos, 40, 20, 30));
@@ -48,6 +54,7 @@ void setup() {
     perc.add(new Rec(pos, 220, 20, 30));
     pos = pos + 30;
   }
+  //Initialize and draw Lines
   int linepos = 125;
   for(int i = 0; i < 3; i++){
     strokeWeight(1);
@@ -58,6 +65,7 @@ void setup() {
     line(linepos, 220, linepos, 250);
     linepos = linepos + 120;
   }
+  //Add all Mutebuttons to MuteList
   int mutepos = 21;
   int val = 1;
   for(int i = 0; i < 4; i++) {
@@ -70,9 +78,12 @@ void setup() {
   int count = 0;
 
 void draw() {
+  //Draw Single BUttons
   amp.draw();
   clear.draw();
   pause.draw();
+  
+  //Draw Texts
   text("PAUSE", 377, 24);
   text("CLEAR", 437, 24);
   fill(#6272a4);
@@ -81,6 +92,8 @@ void draw() {
   text("HIHAT", 10, 90); 
   text("SNARE", 10, 150); 
   text("PERCS", 10, 210); 
+  
+  //Draw all PlayRecs
   for(int i = 0; i < rects.size(); i++) {
     Rec aRec = (Rec) rects.get(i);
     aRec.draw();
@@ -91,15 +104,15 @@ void draw() {
     Rec aPerc = (Rec) perc.get(i);
     aPerc.draw();
   }
+  //Draw all MuteButtons
   for(int i = 0; i < mute.size(); i++) {
     ButtonRec aMute = (ButtonRec) mute.get(i);
     aMute.draw();
   }
 
   
-  //Color next Rec for every iteration
   
-  //init previous BaseRec && HihtRec
+  //init previous PlayRecs
   Rec prevRec = (Rec) rects.get(1);
   Rec prevHiht = (Rec) hiht.get(1);
   Rec prevSnare = (Rec) snare.get(1);
@@ -117,45 +130,45 @@ void draw() {
     prevPerc = (Rec) perc.get(perc.size()-1);
   }
   
-  //Blink Current Recs and prevRecs
-  Rec aRec = (Rec) rects.get(count);
-  Rec aHiht = (Rec) hiht.get(count);
-  Rec aSnare = (Rec) snare.get(count);
-  Rec aPerc = (Rec) perc.get(count);
-  
+  //Blink previous Recs for every Iteration
   prevRec.time = false;
   prevHiht.time = false;
   prevSnare.time = false;
   prevPerc.time = false;
-  
-  aRec.time = true;
-  aHiht.time = true;
-  aSnare.time = true;
-  aPerc.time = true;
   
   prevRec.blink();
   prevHiht.blink();
   prevSnare.blink();
   prevPerc.blink();
   
+  
+  //Blink Current Recs for every iteration
+  Rec aRec = (Rec) rects.get(count);
+  Rec aHiht = (Rec) hiht.get(count);
+  Rec aSnare = (Rec) snare.get(count);
+  Rec aPerc = (Rec) perc.get(count);
+  
+  aRec.time = true;
+  aHiht.time = true;
+  aSnare.time = true;
+  aPerc.time = true;
+  
   aRec.blink();
   aHiht.blink();
   aSnare.blink();
   aPerc.blink();
   
-  //Color next HiHt for every iteration
-  
-  
-  
-  
-  //restart counter after 16 iterations
+  //counter
   count++;
+  //restart counter after 16 iterations
   if(count == 16) count = 0;
   
-  //give Base value for every iteration
   OscMessage baseMessage = new OscMessage("/sec");
+  //give Base value for every iteration
+  
   if(aRec.b && aRec.mute != true) baseMessage.add(1);
   else baseMessage.add(0);
+  
   //give Hiht value for every iteration
   if(aHiht.b && aHiht.mute != true) baseMessage.add(1);
   else baseMessage.add(0);
@@ -168,18 +181,18 @@ void draw() {
   if(aPerc.b && aPerc.mute != true) baseMessage.add(1);
   else baseMessage.add(0);
   
-  
+  //Send Instrument Booleans
   oscP5.send(baseMessage, myRemoteLocation);
   
+  //Send Amplitude over OSC
   OscMessage ampMessage = new OscMessage("/amp");
   ampMessage.add(amp.amp);
   oscP5.send(ampMessage, myRemoteLocation);
   
-  //give Hiht value for every iteration
-  
 }
 
 void mouseClicked(){
+    //Iterate over every Rec and check if clicked
     for (int i = 0; i < rects.size(); i++) {
     //check if BaseRec was clicked
     Rec aRec = (Rec) rects.get(i);
@@ -196,22 +209,25 @@ void mouseClicked(){
     
 
 }
-    //clear button
+    //check click on clear button
     clear.clickCheck(mouseX, mouseY);
     
-    //pause button
+    //check click on pause button
     pause.pauseCheck(mouseX, mouseY);
     
+    //check click on Mute Buttons
     for(int i = 0; i < 4; i++) {
       ButtonRec aMute = (ButtonRec) mute.get(i);
       aMute.muteCheck(mouseX, mouseY);
     }
+    
+    //Check click on AmpControlButtons
     up.AmpControlCheck(mouseX, mouseY);
     down.AmpControlCheck(mouseX, mouseY);
 
 }
 
-//SecClass
+//Rec Class
 class Rec {
   int x,y,w,h;
   color c;
