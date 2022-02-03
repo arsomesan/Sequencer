@@ -13,6 +13,12 @@ NetAddress myRemoteLocation;
 Knob volumeKnob;
 float volumeKnobValue;
 
+Knob baseRateKnob;
+float baseRateValue;
+
+Knob hihtRateKnob;
+float hihtRateValue;
+
 //initialize all ButtonLists
 ArrayList rects;
 ArrayList hiht;
@@ -39,18 +45,47 @@ void setup() {
   //surface.setTitle("JUMBOTUNE");
   
   background(#282a36);
-  size(490,400);
+  size(1100,800);
   frameRate(4);
   
   cp5 = new ControlP5(this);
   volumeKnob = cp5.addKnob("VolumeKnob")
                .setRange(0,1)
                .setValue(0.5)
-               .setPosition(100,300)
+               .setPosition(width-60,height-70)
                .setRadius(50)
                .setDragDirection(Knob.VERTICAL)
                .setHeight(30)
-               .setSize(40,40)
+               .setSize(50,50)
+               .setColorForeground(#8be9fd)
+               .setColorBackground(#282a36)
+               .setColorActive(#50fa7b)
+               ;
+               
+  baseRateKnob = cp5.addKnob("BRate")
+                 .setRange(0,10)
+                 .setValue(1)
+                 .setPosition(width - 60, 30)
+                 .setRadius(10)
+                 .setDragDirection(Knob.VERTICAL)
+                 .setHeight(30)
+                 .setSize(45,45)
+                 .setColorForeground(#8be9fd)
+                 .setColorBackground(#282a36)
+                 .setColorActive(#50fa7b)
+                 ;
+                 
+  hihtRateKnob = cp5.addKnob("HRate")
+               .setRange(0,10)
+               .setValue(1)
+               .setPosition(width - 60, 90)
+               .setRadius(10)
+               .setDragDirection(Knob.VERTICAL)
+               .setHeight(30)
+               .setSize(45,45)
+               .setColorForeground(#8be9fd)
+               .setColorBackground(#282a36)
+               .setColorActive(#50fa7b)
                ;
   
   //OSC initialize
@@ -72,7 +107,7 @@ void setup() {
   amp = new Amp(50, 20, width - 60, height - 35);
   
   clear.c = #ff5555;
-  pause.c = #50fa7b;
+  pause.c = #ffb86c;
   
   //Add all Recs to RecLists
   int pos = 10;
@@ -116,6 +151,7 @@ void draw() {
   pause.draw();
   
   //Draw Texts
+  fill(#ffffff);
   text("PAUSE", 377, 24);
   text("CLEAR", 437, 24);
   if(fontcount == 0) {
@@ -362,7 +398,7 @@ class ButtonRec {
     if( _x > x && _y > y && _x < x+w && _y < y+h ){
       if(check) {
         check = false;
-        c = #50fa7b;
+        c = #ffb86c;
         pause.draw();
         loop();
       } else {
