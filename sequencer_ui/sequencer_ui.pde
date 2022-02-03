@@ -20,7 +20,7 @@ Amp amp;
 void setup() {
   background(#282a36);
   frameRate(4);
-  size(490,500);
+  size(490,400);
   oscP5 = new OscP5(this,4560);
   myRemoteLocation = new NetAddress("127.0.0.1",4560);
   
