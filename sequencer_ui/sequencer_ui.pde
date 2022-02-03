@@ -12,10 +12,13 @@ ArrayList snare;
 ArrayList mute;
 ButtonRec clear;
 ButtonRec pause;
+AmpControl up;
+AmpControl down;
+Amp amp;
 void setup() {
   background(#282a36);
   frameRate(4);
-  size(490,220);
+  size(490,250);
   oscP5 = new OscP5(this,4560);
   myRemoteLocation = new NetAddress("127.0.0.1",4560);
   
@@ -28,6 +31,8 @@ void setup() {
   clear = new ButtonRec(430, 10, 50, 20);
   //Pause Button
   pause = new ButtonRec(370, 10, 50, 20);
+  //Amp
+  amp = new Amp(50, 20, width - 60, height - 35);
   
   clear.c = #ff5555;
   pause.c = #50fa7b;
@@ -60,12 +65,13 @@ void setup() {
   int count = 0;
 
 void draw() {
+  amp.draw();
   clear.draw();
   pause.draw();
   text("PAUSE", 377, 24);
   text("CLEAR", 437, 24);
   fill(#6272a4);
-  text("JUMBOTUNE2000 by Adrian Somesan", 10, 210); 
+  text("JUMBOTUNE2000 by Adrian Somesan", 10, height - 10); 
   text("BASE", 10, 30); 
   text("HIHAT", 10, 90); 
   text("SNARE", 10, 150); 
@@ -145,6 +151,10 @@ void draw() {
   
   oscP5.send(baseMessage, myRemoteLocation);
   
+  OscMessage ampMessage = new OscMessage("/amp");
+  ampMessage.add(amp.amp);
+  oscP5.send(ampMessage, myRemoteLocation);
+  
   //give Hiht value for every iteration
   
 }
@@ -173,6 +183,8 @@ void mouseClicked(){
       ButtonRec aMute = (ButtonRec) mute.get(i);
       aMute.muteCheck(mouseX, mouseY);
     }
+    up.AmpControlCheck(mouseX, mouseY);
+    down.AmpControlCheck(mouseX, mouseY);
 
 }
 
@@ -279,7 +291,7 @@ class ButtonRec {
         c = #ff5555;
         text("PAUSE", 377, 24);
         pause.draw();
-        text("PAUSE", 377, 24);
+        text("PLAY", 382, 24);
         check = true;
         noLoop();
         OscMessage baseMessage = new OscMessage("/sec");
@@ -379,4 +391,77 @@ class ButtonRec {
      }
    }
   }
+}
+
+class Amp{
+  float amp;
+  color c;
+  int _x;
+  int _y;
+  int _w;
+  int _h;
+  
+  Amp(int w, int h, int x, int y){
+    amp = 1;
+    c = #bd93f9;
+    _x = x;
+    _y = y;
+    _w = w;
+    _h = h;
+  }
+  
+  void draw() {
+    noStroke();
+    fill(c);
+    rect(_x, _y, _w, _h);
+    up = new AmpControl(_x, _y+22, _w, _h/5, 0, #50fa7b);
+    down = new AmpControl(_x, _y-6, _w, _h/5, 1, #ff5555);
+    up.draw();
+    down.draw();
+    fill(#ffffff);
+    String ampformat = String.format("%.1f", amp);
+    text("AMP: " + ampformat, _x + _w/12, _y + _h/1.5);
+  }
+  
+  
+}
+
+class AmpControl{
+  color c;
+  int x;
+  int y;
+  int w;
+  int h;
+  int val;
+  
+  AmpControl(int _x, int _y, int _w, int _h, int v, color co) {
+    c = co;
+    x = _x;
+    y = _y;
+    w = _w;
+    h = _h;
+    val = v;
+  }
+  
+  void draw() {
+  noStroke();
+  fill(c);
+  rect(x, y, w, h);
+}
+
+  void AmpControlCheck( int _x, int _y ) {
+   if( _x > x && _y > y && _x < x+w && _y < y+h ){
+     
+     if(val == 1) {
+       amp.amp = amp.amp + 0.1;
+       amp.draw();
+     } else{
+       amp.amp = amp.amp - 0.1;
+       amp.draw();
+     }
+     
+   }
+  }
+  
+  
 }
