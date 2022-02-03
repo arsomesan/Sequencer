@@ -1,9 +1,17 @@
 
 import oscP5.*;
 import netP5.*;
+import controlP5.*;
+import javax.swing.ImageIcon;
 
 OscP5 oscP5;
+ControlP5 cp5;
+
 NetAddress myRemoteLocation;
+
+//initialite Controllers
+Knob volumeKnob;
+float volumeKnobValue;
 
 //initialize all ButtonLists
 ArrayList rects;
@@ -19,10 +27,31 @@ AmpControl up;
 AmpControl down;
 Amp amp;
 
+PImage icon;
+
 void setup() {
+  //Programm Icon
+  icon = loadImage("loop.png");
+  ImageIcon barIcon = new ImageIcon(loadBytes("loop.png"));
+  frame.setIconImage(barIcon.getImage());
+  frame.setTitle("JUMBOTUNE");
+  //surface.setIcon(icon);
+  //surface.setTitle("JUMBOTUNE");
+  
   background(#282a36);
   size(490,400);
   frameRate(4);
+  
+  cp5 = new ControlP5(this);
+  volumeKnob = cp5.addKnob("VolumeKnob")
+               .setRange(0,1)
+               .setValue(0.5)
+               .setPosition(100,300)
+               .setRadius(50)
+               .setDragDirection(Knob.VERTICAL)
+               .setHeight(30)
+               .setSize(40,40)
+               ;
   
   //OSC initialize
   oscP5 = new OscP5(this,4560);
@@ -69,30 +98,35 @@ void setup() {
   int mutepos = 21;
   int val = 1;
   for(int i = 0; i < 4; i++) {
-    mute.add(new ButtonRec(50, mutepos, 10, 10, val));
+    mute.add(new ButtonRec(55, mutepos, 10, 10, val));
     val++;
     mutepos = mutepos + 60;
   }
 }
 
   int count = 0;
-
+  int fontcount = 0;
 void draw() {
+  //Draw Icon
+  icon.resize(40, 40);
+  image(icon, (width/2) - 20, height - 50);
+  
   //Draw Single BUttons
-  amp.draw();
   clear.draw();
   pause.draw();
   
   //Draw Texts
   text("PAUSE", 377, 24);
   text("CLEAR", 437, 24);
+  if(fontcount == 0) {
   fill(#6272a4);
-  text("JUMBOTUNE2000 by Adrian Somesan", 10, height - 10); 
+  text("JUMBOTUNE by Adrian Somesan", 10, height - 25); 
   text("BASE", 10, 30); 
   text("HIHAT", 10, 90); 
   text("SNARE", 10, 150); 
   text("PERCS", 10, 210); 
-  
+  }
+  fontcount++;
   //Draw all PlayRecs
   for(int i = 0; i < rects.size(); i++) {
     Rec aRec = (Rec) rects.get(i);
@@ -186,8 +220,14 @@ void draw() {
   
   //Send Amplitude over OSC
   OscMessage ampMessage = new OscMessage("/amp");
-  ampMessage.add(amp.amp);
+  ampMessage.add(volumeKnobValue);
   oscP5.send(ampMessage, myRemoteLocation);
+  
+}
+
+void VolumeKnob(float theValue) {
+  volumeKnobValue = theValue;
+  print(volumeKnobValue);
   
 }
 
@@ -220,10 +260,6 @@ void mouseClicked(){
       ButtonRec aMute = (ButtonRec) mute.get(i);
       aMute.muteCheck(mouseX, mouseY);
     }
-    
-    //Check click on AmpControlButtons
-    up.AmpControlCheck(mouseX, mouseY);
-    down.AmpControlCheck(mouseX, mouseY);
 
 }
 
