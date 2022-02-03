@@ -10,6 +10,8 @@ ArrayList rects;
 ArrayList hiht;
 ArrayList snare;
 ArrayList mute;
+ArrayList perc;
+
 ButtonRec clear;
 ButtonRec pause;
 AmpControl up;
@@ -18,13 +20,14 @@ Amp amp;
 void setup() {
   background(#282a36);
   frameRate(4);
-  size(490,250);
+  size(490,500);
   oscP5 = new OscP5(this,4560);
   myRemoteLocation = new NetAddress("127.0.0.1",4560);
   
   rects = new ArrayList();
   hiht = new ArrayList();
   snare = new ArrayList();
+  perc = new ArrayList();
   
   mute = new ArrayList();
   //Clear all Button
@@ -42,6 +45,7 @@ void setup() {
     rects.add(new Rec(pos, 40, 20, 30));
     hiht.add(new Rec(pos, 100, 20, 30));
     snare.add(new Rec(pos, 160, 20, 30));
+    perc.add(new Rec(pos, 220, 20, 30));
     pos = pos + 30;
   }
   int linepos = 125;
@@ -51,11 +55,12 @@ void setup() {
     line(linepos, 40, linepos, 70);
     line(linepos, 100, linepos, 130);
     line(linepos, 160, linepos, 190);
+    line(linepos, 220, linepos, 250);
     linepos = linepos + 120;
   }
   int mutepos = 21;
   int val = 1;
-  for(int i = 0; i < 3; i++) {
+  for(int i = 0; i < 4; i++) {
     mute.add(new ButtonRec(50, mutepos, 10, 10, val));
     val++;
     mutepos = mutepos + 60;
@@ -75,6 +80,7 @@ void draw() {
   text("BASE", 10, 30); 
   text("HIHAT", 10, 90); 
   text("SNARE", 10, 150); 
+  text("PERCS", 10, 210); 
   for(int i = 0; i < rects.size(); i++) {
     Rec aRec = (Rec) rects.get(i);
     aRec.draw();
@@ -82,6 +88,8 @@ void draw() {
     aHiht.draw();
     Rec aSnare = (Rec) snare.get(i);
     aSnare.draw(); 
+    Rec aPerc = (Rec) perc.get(i);
+    aPerc.draw();
   }
   for(int i = 0; i < mute.size(); i++) {
     ButtonRec aMute = (ButtonRec) mute.get(i);
@@ -95,37 +103,45 @@ void draw() {
   Rec prevRec = (Rec) rects.get(1);
   Rec prevHiht = (Rec) hiht.get(1);
   Rec prevSnare = (Rec) snare.get(1);
+  Rec prevPerc = (Rec) perc.get(1);
   if(count != 0) {
     prevRec = (Rec) rects.get(count-1);
     prevHiht = (Rec) hiht.get(count-1);
     prevSnare = (Rec) snare.get(count-1);
+    prevPerc = (Rec) perc.get(count-1);
   }
   else {
     prevRec = (Rec) rects.get(rects.size()-1);
     prevHiht = (Rec) hiht.get(hiht.size()-1);  
     prevSnare = (Rec) snare.get(snare.size()-1);
+    prevPerc = (Rec) perc.get(perc.size()-1);
   }
   
   //Blink Current Recs and prevRecs
   Rec aRec = (Rec) rects.get(count);
   Rec aHiht = (Rec) hiht.get(count);
   Rec aSnare = (Rec) snare.get(count);
+  Rec aPerc = (Rec) perc.get(count);
   
   prevRec.time = false;
   prevHiht.time = false;
   prevSnare.time = false;
+  prevPerc.time = false;
   
   aRec.time = true;
   aHiht.time = true;
   aSnare.time = true;
+  aPerc.time = true;
   
   prevRec.blink();
   prevHiht.blink();
   prevSnare.blink();
+  prevPerc.blink();
   
   aRec.blink();
   aHiht.blink();
   aSnare.blink();
+  aPerc.blink();
   
   //Color next HiHt for every iteration
   
@@ -146,6 +162,10 @@ void draw() {
   
   //give Snare value for every iteration
   if(aSnare.b && aSnare.mute != true) baseMessage.add(1);
+  else baseMessage.add(0);
+  
+  //give Percussion value for every iteration
+  if(aPerc.b && aPerc.mute != true) baseMessage.add(1);
   else baseMessage.add(0);
   
   
@@ -170,6 +190,9 @@ void mouseClicked(){
     //check if snareRec was clicked
     Rec aSnare = (Rec) snare.get(i);
     aSnare.clickCheck(mouseX, mouseY);
+    //check if percRec was clicked
+    Rec aPerc = (Rec) perc.get(i);
+    aPerc.clickCheck(mouseX, mouseY);
     
 
 }
@@ -179,7 +202,7 @@ void mouseClicked(){
     //pause button
     pause.pauseCheck(mouseX, mouseY);
     
-    for(int i = 0; i < 3; i++) {
+    for(int i = 0; i < 4; i++) {
       ButtonRec aMute = (ButtonRec) mute.get(i);
       aMute.muteCheck(mouseX, mouseY);
     }
@@ -270,12 +293,15 @@ class ButtonRec {
         Rec aRec = (Rec) rects.get(i);
         Rec aHiht = (Rec) hiht.get(i);
         Rec aSnare = (Rec) snare.get(i);
+        Rec aPerc = (Rec) perc.get(i);
         aRec.b = false;
         aHiht.b = false;
         aSnare.b = false;
+        aPerc.b = false;
         aRec.blink();
         aHiht.blink();
         aSnare.blink();
+        aPerc.blink();
       }
     }
   }
@@ -309,7 +335,19 @@ class ButtonRec {
      
      if(check == false){
        
-       if(val == 3) {
+       if(val == 4) {
+         check = true;
+        
+         for(int i = 0; i < perc.size(); i++){
+           Rec aPerc = (Rec) perc.get(i);
+           aPerc.mute = true;
+         }
+         c = #ff5555;
+         ButtonRec aMute = (ButtonRec) mute.get(0);
+         aMute.draw();         
+       }
+       
+       else if(val == 3) {
          check = true;
         
          for(int i = 0; i < snare.size(); i++){
@@ -349,7 +387,20 @@ class ButtonRec {
      
      else if(check) {
        
-       if(val == 3) {
+       if(val == 4) {
+         check = false;
+         c = #ffb86c;
+         
+         for(int i = 0; i < perc.size(); i++){
+           Rec aPerc = (Rec) perc.get(i);
+           aPerc.mute = false;
+         }
+         ButtonRec aMute = (ButtonRec) mute.get(0);
+         aMute.draw();
+         redraw();
+       }
+       
+       else if(val == 3) {
          check = false;
          c = #ffb86c;
          
@@ -420,7 +471,7 @@ class Amp{
     down.draw();
     fill(#ffffff);
     String ampformat = String.format("%.1f", amp);
-    text("AMP: " + ampformat, _x + _w/12, _y + _h/1.5);
+    text("VOL: " + ampformat, _x + _w/12, _y + _h/1.5);
   }
   
   

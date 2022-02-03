@@ -7,6 +7,7 @@ live_loop :getbool do
   set :baseBool, base[0]
   set :hihtBool, base[1]
   set :snareBool, base[2]
+  set :percBool, base[3]
 end
 
 live_loop :getamp do
@@ -43,6 +44,15 @@ live_loop :_snare do
     sample :drum_snare_soft, amp: (bamp * 1) * sbool, rate: 1.5, attack: 0, sustain: 1, release: 0
     sleep 0.25
   end
+end
+
+live_loop :_perc do
+  use_real_time
+  cue :start_base
+  pbool = get(:percBool)
+  bamp = get(:globalAmp)
+  sample :perc_snap, amp: (bamp * 1.5) * pbool, rate: 2
+  sleep 0.25
 end
 
 
