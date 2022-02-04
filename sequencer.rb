@@ -16,6 +16,16 @@ live_loop :getamp do
   set :globalAmp, amp[0]
 end
 
+live_loop :getrate do
+  use_real_time
+  rate = sync "/osc*/rate"
+  set :brate, rate[0]
+  set :hrate, rate[1]
+  set :srate, rate[2]
+  set :prate, rate[3]
+end
+
+
 
 
 live_loop :_base do
@@ -23,7 +33,8 @@ live_loop :_base do
   use_real_time
   bbool = get(:baseBool)
   bamp = get(:globalAmp)
-  sample :bd_haus, amp: (bamp * 4) * bbool
+  baserate = get(:brate)
+  sample :bd_haus, amp: (bamp * 4) * bbool, rate: baserate
   sleep 0.25
 end
 
@@ -32,7 +43,8 @@ live_loop :_hiht do
   cue :start_base
   hbool = get(:hihtBool)
   bamp = get(:globalAmp)
-  sample :drum_cymbal_closed, amp: (bamp * 1.5) * hbool, rate: 2
+  hihtrate = get(:hrate)
+  sample :drum_cymbal_closed, amp: (bamp * 1.5) * hbool, rate: hihtrate
   sleep 0.25
 end
 
@@ -40,10 +52,9 @@ live_loop :_snare do
   use_real_time
   sbool = get(:snareBool)
   bamp = get(:globalAmp)
-  with_fx :distortion do
-    sample :drum_snare_soft, amp: (bamp * 1) * sbool, rate: 1.5, attack: 0, sustain: 1, release: 0
-    sleep 0.25
-  end
+  snarerate = get(:srate)
+  sample :drum_snare_soft, amp: (bamp * 1) * sbool, rate: snarerate, attack: 0, sustain: 1, release: 0
+  sleep 0.25
 end
 
 live_loop :_perc do
@@ -51,7 +62,8 @@ live_loop :_perc do
   cue :start_base
   pbool = get(:percBool)
   bamp = get(:globalAmp)
-  sample :perc_snap, amp: (bamp * 1.5) * pbool, rate: 2
+  percrate = get(:prate)
+  sample :perc_snap, amp: (bamp * 1.5) * pbool, rate: percrate
   sleep 0.25
 end
 

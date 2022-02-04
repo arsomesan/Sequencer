@@ -19,6 +19,12 @@ float baseRateValue;
 Knob hihtRateKnob;
 float hihtRateValue;
 
+Knob snareRateKnob;
+float snareRateValue;
+
+Knob percRateKnob;
+float percRateValue;
+
 //initialize all ButtonLists
 ArrayList rects;
 ArrayList hiht;
@@ -52,11 +58,10 @@ void setup() {
   volumeKnob = cp5.addKnob("VolumeKnob")
                .setRange(0,1)
                .setValue(0.5)
-               .setPosition(width-60,height-70)
+               .setPosition(width-100,height-90)
                .setRadius(50)
                .setDragDirection(Knob.VERTICAL)
-               .setHeight(30)
-               .setSize(50,50)
+               .setSize(70,70)
                .setColorForeground(#8be9fd)
                .setColorBackground(#282a36)
                .setColorActive(#50fa7b)
@@ -65,11 +70,11 @@ void setup() {
   baseRateKnob = cp5.addKnob("BRate")
                  .setRange(0,10)
                  .setValue(1)
-                 .setPosition(width - 60, 30)
+                 .setPosition(width - 120, 75)
                  .setRadius(10)
                  .setDragDirection(Knob.VERTICAL)
                  .setHeight(30)
-                 .setSize(45,45)
+                 .setSize(60,60)
                  .setColorForeground(#8be9fd)
                  .setColorBackground(#282a36)
                  .setColorActive(#50fa7b)
@@ -78,15 +83,41 @@ void setup() {
   hihtRateKnob = cp5.addKnob("HRate")
                .setRange(0,10)
                .setValue(1)
-               .setPosition(width - 60, 90)
+               .setPosition(width - 120, 195)
                .setRadius(10)
                .setDragDirection(Knob.VERTICAL)
                .setHeight(30)
-               .setSize(45,45)
+               .setSize(60,60)
                .setColorForeground(#8be9fd)
                .setColorBackground(#282a36)
                .setColorActive(#50fa7b)
                ;
+
+  snareRateKnob = cp5.addKnob("SRate")
+               .setRange(0,10)
+               .setValue(1)
+               .setPosition(width - 120, 315)
+               .setRadius(10)
+               .setDragDirection(Knob.VERTICAL)
+               .setHeight(30)
+               .setSize(60,60)
+               .setColorForeground(#8be9fd)
+               .setColorBackground(#282a36)
+               .setColorActive(#50fa7b)
+               ;     
+     
+  percRateKnob = cp5.addKnob("PRate")
+               .setRange(0,10)
+               .setValue(1)
+               .setPosition(width - 120, 435)
+               .setRadius(10)
+               .setDragDirection(Knob.VERTICAL)
+               .setHeight(30)
+               .setSize(60,60)
+               .setColorForeground(#8be9fd)
+               .setColorBackground(#282a36)
+               .setColorActive(#50fa7b)
+               ;                 
   
   //OSC initialize
   oscP5 = new OscP5(this,4560);
@@ -100,11 +131,9 @@ void setup() {
   mute = new ArrayList();
   
   //Clear all Button
-  clear = new ButtonRec(430, 10, 50, 20);
+  clear = new ButtonRec(width - 250, height - 60, 100, 40);
   //Pause Button
-  pause = new ButtonRec(370, 10, 50, 20);
-  //Amp
-  amp = new Amp(50, 20, width - 60, height - 35);
+  pause = new ButtonRec(width - 370, height - 60, 100, 40);
   
   clear.c = #ff5555;
   pause.c = #ffb86c;
@@ -112,30 +141,30 @@ void setup() {
   //Add all Recs to RecLists
   int pos = 10;
   for(int i = 0; i < 16; i++) { 
-    rects.add(new Rec(pos, 40, 20, 30));
-    hiht.add(new Rec(pos, 100, 20, 30));
-    snare.add(new Rec(pos, 160, 20, 30));
-    perc.add(new Rec(pos, 220, 20, 30));
-    pos = pos + 30;
+    rects.add(new Rec(pos, 80, 40, 60));
+    hiht.add(new Rec(pos, 200, 40, 60));
+    snare.add(new Rec(pos, 320, 40, 60));
+    perc.add(new Rec(pos, 440, 40, 60));
+    pos = pos + 60;
   }
   //Initialize and draw Lines
-  int linepos = 125;
+  int linepos = 240;
   for(int i = 0; i < 3; i++){
     strokeWeight(1);
     stroke(#6272a4);
-    line(linepos, 40, linepos, 70);
-    line(linepos, 100, linepos, 130);
-    line(linepos, 160, linepos, 190);
-    line(linepos, 220, linepos, 250);
-    linepos = linepos + 120;
+    line(linepos, 80, linepos, 140);
+    line(linepos, 200, linepos, 260);
+    line(linepos, 320, linepos, 380);
+    line(linepos, 440, linepos, 500);
+    linepos = linepos + 240;
   }
   //Add all Mutebuttons to MuteList
-  int mutepos = 21;
+  int mutepos = 52;
   int val = 1;
   for(int i = 0; i < 4; i++) {
-    mute.add(new ButtonRec(55, mutepos, 10, 10, val));
+    mute.add(new ButtonRec(10, mutepos, 40, 20, val));
     val++;
-    mutepos = mutepos + 60;
+    mutepos = mutepos + 120;
   }
 }
 
@@ -144,23 +173,25 @@ void setup() {
 void draw() {
   //Draw Icon
   icon.resize(40, 40);
-  image(icon, (width/2) - 20, height - 50);
-  
+  image(icon, (width/2) - 20, height - 60);
+  textSize(10);
+  fill(#6272a4);
+  text("JUMBOTUNE by Adrian Somesan", (width/2) -80, height - 10); 
   //Draw Single BUttons
   clear.draw();
   pause.draw();
   
   //Draw Texts
+  textSize(24);
   fill(#ffffff);
-  text("PAUSE", 377, 24);
-  text("CLEAR", 437, 24);
+  text("PAUSE", width - 360, height - 31);
+  text("CLEAR", width - 240, height - 31);
   if(fontcount == 0) {
-  fill(#6272a4);
-  text("JUMBOTUNE by Adrian Somesan", 10, height - 25); 
-  text("BASE", 10, 30); 
-  text("HIHAT", 10, 90); 
-  text("SNARE", 10, 150); 
-  text("PERCS", 10, 210); 
+    fill(#6272a4);
+    text("BASE", 70, 70); 
+    text("HIHAT", 70, 190); 
+    text("SNARE", 70, 310); 
+    text("PERCS", 70, 430); 
   }
   fontcount++;
   //Draw all PlayRecs
@@ -259,6 +290,14 @@ void draw() {
   ampMessage.add(volumeKnobValue);
   oscP5.send(ampMessage, myRemoteLocation);
   
+  //Send Rate over OSC
+  OscMessage rateMessage = new OscMessage("/rate");
+  rateMessage.add(baseRateValue);
+  rateMessage.add(hihtRateValue);
+  rateMessage.add(snareRateValue);
+  rateMessage.add(percRateValue);
+  oscP5.send(rateMessage, myRemoteLocation);
+  
 }
 
 void VolumeKnob(float theValue) {
@@ -266,6 +305,31 @@ void VolumeKnob(float theValue) {
   print(volumeKnobValue);
   
 }
+
+void BRate(float theValue) {
+  baseRateValue = theValue;
+  print(baseRateValue);
+  
+}
+
+void HRate(float theValue) {
+  hihtRateValue = theValue;
+  print(hihtRateValue);
+  
+}
+
+void SRate(float theValue) {
+  snareRateValue = theValue;
+  print(snareRateValue);
+  
+}
+
+void PRate(float theValue) {
+  percRateValue = theValue;
+  print(percRateValue);
+  
+}
+
 
 void mouseClicked(){
     //Iterate over every Rec and check if clicked
@@ -403,9 +467,9 @@ class ButtonRec {
         loop();
       } else {
         c = #ff5555;
-        text("PAUSE", 377, 24);
+        text("PAUSE", width - 360, height - 31);
         pause.draw();
-        text("PLAY", 382, 24);
+        text("PLAY", width - 350, height - 31);
         check = true;
         noLoop();
         OscMessage baseMessage = new OscMessage("/sec");
