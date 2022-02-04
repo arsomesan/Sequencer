@@ -54,7 +54,7 @@ void setup() {
   //Font
   roboto = loadFont("RobotoCondensed-Regular-48.vlw");
   textFont(roboto);
-  ControlFont font = new ControlFont(roboto, 15);
+  ControlFont font = new ControlFont(roboto, 20);
   
   //Programm Icon
   icon = loadImage("loop.png");
