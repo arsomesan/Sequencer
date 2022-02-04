@@ -1,6 +1,12 @@
 use_osc "localhost", 4560
 
 
+live_loop :getbpm do
+  use_real_time
+  bpm = sync "/osc*/bpm"
+  set :globalBpm, bpm[0]
+  print(get(:globalBpm))
+end
 
 live_loop :getbool do
   use_real_time
@@ -9,6 +15,7 @@ live_loop :getbool do
   set :hihtBool, base[1]
   set :snareBool, base[2]
   set :percBool, base[3]
+  set :mldyBool, base[4]
 end
 
 live_loop :getamp do
@@ -26,16 +33,29 @@ live_loop :getrate do
   set :prate, rate[3]
 end
 
-live_loop :getbpm do
+live_loop :getattk do
   use_real_time
-  bpm = sync "/osc*/bpm"
-  set :globalBpm, bpm[0]
-  print(get(:globalBpm))
+  attack = sync "/osc*/attk"
+  set :battk, attack[0]
+  set :hattk, attack[1]
+  set :sattk, attack[2]
+  set :pattk, attack[3]
 end
 
+live_loop :getrelease do
+  use_real_time
+  release = sync "/osc*/rel"
+  set :brel, release[0]
+  set :hrel, release[1]
+  set :srel, release[2]
+  set :prel, release[3]
+end
 
-
-
+live_loop :getmldy do
+  use_real_time
+  melody = sync "/osc*/mldy"
+  set :tune, melody[0]
+end
 
 
 live_loop :_base do
@@ -44,7 +64,7 @@ live_loop :_base do
   bbool = get(:baseBool)
   bamp = get(:globalAmp)
   baserate = get(:brate)
-  sample :bd_haus, amp: (bamp * 4) * bbool, rate: baserate
+  sample :bd_haus, amp: (bamp * 4) * bbool, rate: baserate, attack: get(:battk), release: get(:brel)
   sleep get(:globalBpm)
 end
 
@@ -54,7 +74,7 @@ live_loop :_hiht do
   hbool = get(:hihtBool)
   bamp = get(:globalAmp)
   hihtrate = get(:hrate)
-  sample :drum_cymbal_closed, amp: (bamp * 1.5) * hbool, rate: hihtrate
+  sample :drum_cymbal_closed, amp: (bamp * 1.5) * hbool, rate: hihtrate, attack: get(:hattk), release: get(:hrel)
   sleep get(:globalBpm)
 end
 
@@ -63,7 +83,7 @@ live_loop :_snare do
   sbool = get(:snareBool)
   bamp = get(:globalAmp)
   snarerate = get(:srate)
-  sample :drum_snare_soft, amp: (bamp * 1) * sbool, rate: snarerate, attack: 0, sustain: 1, release: 0
+  sample :drum_snare_soft, amp: (bamp * 1) * sbool, rate: snarerate, attack: get(:sattk), sustain: 1, release: get(:srel)
   sleep get(:globalBpm)
 end
 
@@ -73,9 +93,20 @@ live_loop :_perc do
   pbool = get(:percBool)
   bamp = get(:globalAmp)
   percrate = get(:prate)
-  sample :perc_snap, amp: (bamp * 1.5) * pbool, rate: percrate
+  sample :perc_snap, amp: (bamp * 1.5) * pbool, rate: percrate, attack: get(:pattk), release: get(:prel)
   sleep get(:globalBpm)
 end
+
+
+live_loop :_melody do
+  use_real_time
+  cue :start_base
+  mbool = get(:mldyBool)
+  play get(:tune), amp: 1 * mbool
+  sleep get(:globalBpm)
+end
+
+
 
 
 

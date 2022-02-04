@@ -24,11 +24,36 @@ float snareRateValue;
 Knob percRateKnob;
 float percRateValue;
 
+Knob baseAttackKnob;
+float baseAttackValue;
+
+Knob hihtAttackKnob;
+float hihtAttackValue;
+
+Knob snareAttackKnob;
+float snareAttackValue;
+
+Knob percAttackKnob;
+float percAttackValue;
+
+Knob baseReleaseKnob;
+float baseReleaseValue;
+
+Knob hihtReleaseKnob;
+float hihtReleaseValue;
+
+Knob snareReleaseKnob;
+float snareReleaseValue;
+
+Knob percReleaseKnob;
+float percReleaseValue;
+
 Slider bpm;
 int sliderTicks1 = 120;
 
 Textlabel bpmLabel;
 
+int[] m = new int[16];
 
 //initialize all ButtonLists
 ArrayList rects;
@@ -36,6 +61,7 @@ ArrayList hiht;
 ArrayList snare;
 ArrayList mute;
 ArrayList perc;
+ArrayList mldy;
 
 //initialize single Buttons
 ButtonRec clear;
@@ -54,7 +80,7 @@ void setup() {
   //Font
   roboto = loadFont("RobotoCondensed-Regular-48.vlw");
   textFont(roboto);
-  ControlFont font = new ControlFont(roboto, 20);
+  ControlFont font = new ControlFont(roboto, 15);
   
   //Programm Icon
   icon = loadImage("loop.png");
@@ -65,13 +91,14 @@ void setup() {
   //surface.setTitle("JUMBOTUNE");
   
   background(#282a36);
-  size(1300,800);
+  size(1300,900);
   frameRate(fps);
   
   cp5 = new ControlP5(this);
   
   cp5.setControlFont(font);
-                 
+  
+  //Rate Knobs       
   baseRateKnob = cp5.addKnob("BRate")
                  .setRange(0.1,10)
                  .setValue(1)
@@ -122,8 +149,118 @@ void setup() {
                .setColorForeground(#8be9fd)
                .setColorBackground(#282a36)
                .setColorActive(#50fa7b)
-               ;         
+               ;   
+  
+  //Attack Knobs  
+           
+  baseAttackKnob = cp5.addKnob("BAttk")
+                 .setRange(0,1)
+                 .setValue(0)
+                 .setPosition(width - 200, 75)
+                 .setRadius(10)
+                 .setDragDirection(Knob.VERTICAL)
+                 .setHeight(30)
+                 .setSize(60,60)
+                 .setColorForeground(#8be9fd)
+                 .setColorBackground(#282a36)
+                 .setColorActive(#50fa7b)
+                 ;
+                 
+  hihtAttackKnob = cp5.addKnob("HAttk")
+               .setRange(0,1)
+               .setValue(0)
+               .setPosition(width - 200, 195)
+               .setRadius(10)
+               .setDragDirection(Knob.VERTICAL)
+               .setHeight(30)
+               .setSize(60,60)
+               .setColorForeground(#8be9fd)
+               .setColorBackground(#282a36)
+               .setColorActive(#50fa7b)
+               ;
 
+  snareAttackKnob = cp5.addKnob("SAttk")
+               .setRange(0,1)
+               .setValue(0)
+               .setPosition(width - 200, 315)
+               .setRadius(10)
+               .setDragDirection(Knob.VERTICAL)
+               .setHeight(30)
+               .setSize(60,60)
+               .setColorForeground(#8be9fd)
+               .setColorBackground(#282a36)
+               .setColorActive(#50fa7b)
+               ;     
+     
+  percAttackKnob = cp5.addKnob("PAttk")
+               .setRange(0,1)
+               .setValue(0)
+               .setPosition(width - 200, 435)
+               .setRadius(10)
+               .setDragDirection(Knob.VERTICAL)
+               .setHeight(30)
+               .setSize(60,60)
+               .setColorForeground(#8be9fd)
+               .setColorBackground(#282a36)
+               .setColorActive(#50fa7b)
+               ;      
+     
+     
+  //Release Knobs  
+           
+  baseReleaseKnob = cp5.addKnob("BRel")
+                 .setRange(0,1)
+                 .setValue(0)
+                 .setPosition(width - 280, 75)
+                 .setRadius(10)
+                 .setDragDirection(Knob.VERTICAL)
+                 .setHeight(30)
+                 .setSize(60,60)
+                 .setColorForeground(#8be9fd)
+                 .setColorBackground(#282a36)
+                 .setColorActive(#50fa7b)
+                 ;
+                 
+  hihtReleaseKnob = cp5.addKnob("HRel")
+               .setRange(0,1)
+               .setValue(0)
+               .setPosition(width - 280, 195)
+               .setRadius(10)
+               .setDragDirection(Knob.VERTICAL)
+               .setHeight(30)
+               .setSize(60,60)
+               .setColorForeground(#8be9fd)
+               .setColorBackground(#282a36)
+               .setColorActive(#50fa7b)
+               ;
+
+  snareReleaseKnob = cp5.addKnob("SRel")
+               .setRange(0,1)
+               .setValue(0)
+               .setPosition(width - 280, 315)
+               .setRadius(10)
+               .setDragDirection(Knob.VERTICAL)
+               .setHeight(30)
+               .setSize(60,60)
+               .setColorForeground(#8be9fd)
+               .setColorBackground(#282a36)
+               .setColorActive(#50fa7b)
+               ;     
+     
+  percReleaseKnob = cp5.addKnob("PRel")
+               .setRange(0,1)
+               .setValue(0)
+               .setPosition(width - 280, 435)
+               .setRadius(10)
+               .setDragDirection(Knob.VERTICAL)
+               .setHeight(30)
+               .setSize(60,60)
+               .setColorForeground(#8be9fd)
+               .setColorBackground(#282a36)
+               .setColorActive(#50fa7b)
+               ;                  
+
+  //Slider
   cp5.addSlider("BPM")
      .setPosition(30, height - 60)
      .setSize(200,40)
@@ -151,6 +288,22 @@ void setup() {
      .setColorBackground(#282a36)
      .setColorActive(#50fa7b)
      ;    
+     
+     //MelodyKnobs
+     int knobcount = 30;
+     for(int i = 0; i < 16; i++){
+       cp5.addKnob("M" + i)
+          .setRange(0,127)
+          .setValue(0)
+          .setSize(40,50)
+          .setPosition(knobcount, 560)
+          .setDecimalPrecision(1)
+          .setColorForeground(#50fa7b)
+          .setColorBackground(#282a36)
+          .setColorActive(#8be9fd)
+          ;
+          knobcount = knobcount + 60;
+     }
     
   
   //OSC initialize
@@ -163,6 +316,7 @@ void setup() {
   snare = new ArrayList();
   perc = new ArrayList();
   mute = new ArrayList();
+  mldy = new ArrayList();
   
   //Clear all Button
   clear = new ButtonRec(width - 250, height - 60, 100, 40);
@@ -179,6 +333,7 @@ void setup() {
     hiht.add(new Rec(pos, 200, 40, 60));
     snare.add(new Rec(pos, 320, 40, 60));
     perc.add(new Rec(pos, 440, 40, 60));
+    mldy.add(new Rec(pos, 650, 40, 60));
     pos = pos + 60;
   }
   //Initialize and draw Lines
@@ -195,7 +350,7 @@ void setup() {
   //Add all Mutebuttons to MuteList
   int mutepos = 52;
   int val = 1;
-  for(int i = 0; i < 4; i++) {
+  for(int i = 0; i < 5; i++) {
     mute.add(new ButtonRec(30, mutepos, 40, 20, val));
     val++;
     mutepos = mutepos + 120;
@@ -234,6 +389,7 @@ void draw() {
     text("HIHAT", 90, 190); 
     text("SNARE", 90, 310); 
     text("PERCS", 90, 430);
+    text("MELODY", 90, 550);
 
   }
   
@@ -248,6 +404,8 @@ void draw() {
     aSnare.draw(); 
     Rec aPerc = (Rec) perc.get(i);
     aPerc.draw();
+    Rec aMldy = (Rec) mldy.get(i);
+    aMldy.draw();
   }
   //Draw all MuteButtons
   for(int i = 0; i < mute.size(); i++) {
@@ -262,17 +420,20 @@ void draw() {
   Rec prevHiht = (Rec) hiht.get(1);
   Rec prevSnare = (Rec) snare.get(1);
   Rec prevPerc = (Rec) perc.get(1);
+  Rec prevMldy = (Rec) mldy.get(1);
   if(count != 0) {
     prevRec = (Rec) rects.get(count-1);
     prevHiht = (Rec) hiht.get(count-1);
     prevSnare = (Rec) snare.get(count-1);
     prevPerc = (Rec) perc.get(count-1);
+    prevMldy = (Rec) mldy.get(count-1);
   }
   else {
     prevRec = (Rec) rects.get(rects.size()-1);
     prevHiht = (Rec) hiht.get(hiht.size()-1);  
     prevSnare = (Rec) snare.get(snare.size()-1);
     prevPerc = (Rec) perc.get(perc.size()-1);
+    prevMldy = (Rec) mldy.get(mldy.size()-1);
   }
   
   //Blink previous Recs for every Iteration
@@ -280,11 +441,13 @@ void draw() {
   prevHiht.time = false;
   prevSnare.time = false;
   prevPerc.time = false;
+  prevMldy.time = false;
   
   prevRec.blink();
   prevHiht.blink();
   prevSnare.blink();
   prevPerc.blink();
+  prevMldy.blink();
   
   
   //Blink Current Recs for every iteration
@@ -292,21 +455,21 @@ void draw() {
   Rec aHiht = (Rec) hiht.get(count);
   Rec aSnare = (Rec) snare.get(count);
   Rec aPerc = (Rec) perc.get(count);
+  Rec aMldy = (Rec) mldy.get(count);
   
   aRec.time = true;
   aHiht.time = true;
   aSnare.time = true;
   aPerc.time = true;
+  aMldy.time = true;
   
   aRec.blink();
   aHiht.blink();
   aSnare.blink();
   aPerc.blink();
+  aMldy.blink();
   
-  //counter
-  count++;
-  //restart counter after 16 iterations
-  if(count == 16) count = 0;
+
   
   OscMessage baseMessage = new OscMessage("/sec");
   //give Base value for every iteration
@@ -326,6 +489,10 @@ void draw() {
   if(aPerc.b && aPerc.mute != true) baseMessage.add(1);
   else baseMessage.add(0);
   
+  //give Melody value for every iteration
+  if(aMldy.b && aMldy.mute != true) baseMessage.add(1);
+  else baseMessage.add(0);
+  
   //Send Instrument Booleans
   oscP5.send(baseMessage, myRemoteLocation);
   
@@ -342,12 +509,38 @@ void draw() {
   rateMessage.add(percRateValue);
   oscP5.send(rateMessage, myRemoteLocation);
   
+  //Send Attack over OSC
+  OscMessage attkMessage = new OscMessage("/attk");
+  attkMessage.add(baseAttackValue);
+  attkMessage.add(hihtAttackValue);
+  attkMessage.add(snareAttackValue);
+  attkMessage.add(percAttackValue);
+  oscP5.send(attkMessage, myRemoteLocation);
+  
+  //Send Release over OSC
+  OscMessage RelMessage = new OscMessage("/rel");
+  RelMessage.add(baseReleaseValue);
+  RelMessage.add(hihtReleaseValue);
+  RelMessage.add(snareReleaseValue);
+  RelMessage.add(percReleaseValue);
+  oscP5.send(RelMessage, myRemoteLocation);
+  
+  //Send Melody Note over OSC
+  OscMessage MldyMessage = new OscMessage("/mldy");
+  MldyMessage.add(m[count]);
+  oscP5.send(MldyMessage, myRemoteLocation);
+  
   //Send BPM
   OscMessage bpmMessage = new OscMessage("/bpm");
   float bpm = 1/fps;
   bpmMessage.add(bpm);
   oscP5.send(bpmMessage, myRemoteLocation);
   
+  //counter
+  count++;
+  //restart counter after 16 iterations
+  if(count == 16) count = 0;
+
 }
 
 void Volume(float theValue) {
@@ -374,11 +567,116 @@ void PRate(float theValue) {
   
 }
 
+void BAttk(float theValue) {
+  baseAttackValue = theValue;
+  
+}
+
+void HAttk(float theValue) {
+  hihtAttackValue = theValue;
+  
+}
+
+void SAttk(float theValue) {
+  snareAttackValue = theValue;
+  
+}
+
+void PAttk(float theValue) {
+  percAttackValue = theValue;
+  
+}
+
+void BRel(float theValue) {
+  baseReleaseValue = theValue;
+  
+}
+
+void HRel(float theValue) {
+  hihtReleaseValue = theValue;
+  
+}
+
+void SRel(float theValue) {
+  snareReleaseValue = theValue;
+  
+}
+
+void PDac(float theValue) {
+  percReleaseValue = theValue;
+  
+}
+
 void BPM(int theValue) { 
   float tmp = theValue * 10;
   fps = tmp / 60;
   frameRate(fps);
 }
+
+void M0(int theValue) {
+  m[0] = theValue;
+}
+
+void M1(int theValue) {
+  m[1] = theValue;
+}
+void M2(int theValue) {
+  m[2] = theValue;
+}
+void M3(int theValue) {
+  m[3] = theValue;
+}
+void M4(int theValue) {
+  m[4] = theValue;
+}
+void M5(int theValue) {
+  m[5] = theValue;
+}
+void M6(int theValue) {
+  m[6] = theValue;
+}
+void M7(int theValue) {
+  m[7] = theValue;
+}
+void M8(int theValue) {
+  m[8] = theValue;
+}
+void M9(int theValue) {
+  m[9] = theValue;
+}
+void M10(int theValue) {
+  m[10] = theValue;
+}
+void M11(int theValue) {
+  m[11] = theValue;
+}
+void M12(int theValue) {
+  m[12] = theValue;
+}
+void M13(int theValue) {
+  m[13] = theValue;
+}
+void M14(int theValue) {
+  m[14] = theValue;
+}
+void M15(int theValue) {
+  m[15] = theValue;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 void mouseClicked(){
@@ -396,6 +694,9 @@ void mouseClicked(){
     //check if percRec was clicked
     Rec aPerc = (Rec) perc.get(i);
     aPerc.clickCheck(mouseX, mouseY);
+    //check if mldyRec was clicked
+    Rec aMldy = (Rec) mldy.get(i);
+    aMldy.clickCheck(mouseX, mouseY);
     
 
 }
@@ -406,7 +707,7 @@ void mouseClicked(){
     pause.pauseCheck(mouseX, mouseY);
     
     //check click on Mute Buttons
-    for(int i = 0; i < 4; i++) {
+    for(int i = 0; i < 5; i++) {
       ButtonRec aMute = (ButtonRec) mute.get(i);
       aMute.muteCheck(mouseX, mouseY);
     }
@@ -496,19 +797,30 @@ class ButtonRec {
         Rec aHiht = (Rec) hiht.get(i);
         Rec aSnare = (Rec) snare.get(i);
         Rec aPerc = (Rec) perc.get(i);
+        Rec aMldy = (Rec) mldy.get(i);
         aRec.b = false;
         aHiht.b = false;
         aSnare.b = false;
         aPerc.b = false;
+        aMldy.b = false;
         aRec.blink();
         aHiht.blink();
         aSnare.blink();
         aPerc.blink();
+        aMldy.blink();
       }
       baseRateKnob.setValue(1.0);
       hihtRateKnob.setValue(1.0);
       snareRateKnob.setValue(1.0);
       percRateKnob.setValue(1.0);
+      baseAttackKnob.setValue(0);
+      hihtAttackKnob.setValue(0);
+      snareAttackKnob.setValue(0);
+      percAttackKnob.setValue(0);
+      baseReleaseKnob.setValue(0);
+      hihtReleaseKnob.setValue(0);
+      snareReleaseKnob.setValue(0);
+      percReleaseKnob.setValue(0);
     }
     
   }
@@ -516,11 +828,14 @@ class ButtonRec {
   void pauseCheck( int _x, int _y ){
     if( _x > x && _y > y && _x < x+w && _y < y+h ){
       if(check) {
+      
         check = false;
         c = #ffb86c;
         pause.draw();
         loop();
+        
       } else {
+        
         c = #ff5555;
         text("PAUSE", width - 360, height - 31);
         pause.draw();
@@ -531,7 +846,10 @@ class ButtonRec {
         baseMessage.add(0);
         baseMessage.add(0);
         baseMessage.add(0);
+        baseMessage.add(0);
+        baseMessage.add(0);
         oscP5.send(baseMessage, myRemoteLocation);
+        
       }
      
     }
@@ -542,7 +860,19 @@ class ButtonRec {
      
      if(check == false){
        
-       if(val == 4) {
+       if(val == 5) {
+         check = true;
+        
+         for(int i = 0; i < mldy.size(); i++){
+           Rec aMldy = (Rec) mldy.get(i);
+           aMldy.mute = true;
+         }
+         c = #ff5555;
+         ButtonRec aMute = (ButtonRec) mute.get(0);
+         aMute.draw();         
+       }
+       
+       else if(val == 4) {
          check = true;
         
          for(int i = 0; i < perc.size(); i++){
@@ -594,7 +924,20 @@ class ButtonRec {
      
      else if(check) {
        
-       if(val == 4) {
+       if(val == 5) {
+         check = false;
+         c = #ffb86c;
+         
+         for(int i = 0; i < mldy.size(); i++){
+           Rec aMldy = (Rec) mldy.get(i);
+           aMldy.mute = false;
+         }
+         ButtonRec aMute = (ButtonRec) mute.get(0);
+         aMute.draw();
+         redraw();
+       }
+       
+       else if(val == 4) {
          check = false;
          c = #ffb86c;
          
