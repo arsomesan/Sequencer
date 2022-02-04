@@ -1,6 +1,7 @@
 use_osc "localhost", 4560
 
 
+
 live_loop :getbool do
   use_real_time
   base = sync "/osc*/sec"
@@ -25,6 +26,15 @@ live_loop :getrate do
   set :prate, rate[3]
 end
 
+live_loop :getbpm do
+  use_real_time
+  bpm = sync "/osc*/bpm"
+  set :globalBpm, bpm[0]
+  print(get(:globalBpm))
+end
+
+
+
 
 
 
@@ -35,7 +45,7 @@ live_loop :_base do
   bamp = get(:globalAmp)
   baserate = get(:brate)
   sample :bd_haus, amp: (bamp * 4) * bbool, rate: baserate
-  sleep 0.25
+  sleep get(:globalBpm)
 end
 
 live_loop :_hiht do
@@ -45,7 +55,7 @@ live_loop :_hiht do
   bamp = get(:globalAmp)
   hihtrate = get(:hrate)
   sample :drum_cymbal_closed, amp: (bamp * 1.5) * hbool, rate: hihtrate
-  sleep 0.25
+  sleep get(:globalBpm)
 end
 
 live_loop :_snare do
@@ -54,7 +64,7 @@ live_loop :_snare do
   bamp = get(:globalAmp)
   snarerate = get(:srate)
   sample :drum_snare_soft, amp: (bamp * 1) * sbool, rate: snarerate, attack: 0, sustain: 1, release: 0
-  sleep 0.25
+  sleep get(:globalBpm)
 end
 
 live_loop :_perc do
@@ -64,7 +74,7 @@ live_loop :_perc do
   bamp = get(:globalAmp)
   percrate = get(:prate)
   sample :perc_snap, amp: (bamp * 1.5) * pbool, rate: percrate
-  sleep 0.25
+  sleep get(:globalBpm)
 end
 
 
