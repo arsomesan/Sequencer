@@ -109,7 +109,7 @@ void setup() {
   
   cp5 = new ControlP5(this);
   
-  cp5.setControlFont(font);
+  //cp5.setControlFont(font);
   
   //Rate Knobs       
   baseRateKnob = cp5.addKnob("BRate")
