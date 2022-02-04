@@ -59,6 +59,13 @@ live_loop :getmldy do
   set :tune, melody[0]
 end
 
+live_loop :getslicer do
+  use_real_time
+  slicer = sync "/osc*/slice"
+  set :slicerwave, slicer[0]
+  set :slicerbool, slicer[1]
+end
+
 
 live_loop :_base do
   sync :start_base
@@ -105,8 +112,10 @@ live_loop :_melody do
   cue :start_base
   bamp = get(:globalAmp)
   mbool = get(:mldyBool)
-  play get(:tune), amp: (bamp * 0.5) * mbool, attack: get(:mattk), decay: get(:mrel)
-  sleep get(:globalBpm)
+  with_fx :slicer, phase: 0.25, wave: get(:slicerwave), mix: get(:slicerbool) do
+    play get(:tune), amp: (bamp * 0.5) * mbool, attack: get(:mattk), decay: get(:mrel)
+    sleep get(:globalBpm)
+  end
 end
 
 

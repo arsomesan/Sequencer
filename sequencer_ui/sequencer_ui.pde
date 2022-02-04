@@ -59,6 +59,11 @@ int sliderTicks1 = 120;
 
 Textlabel bpmLabel;
 
+RadioButton slicerWave;
+int slicerWaveValue;
+
+int slicerBool;
+
 int[] m = new int[16];
 
 //initialize all ButtonLists
@@ -336,6 +341,29 @@ void setup() {
           knobcount = knobcount + 60;
      }
     
+    //SlicerWave
+    slicerWave = cp5.addRadioButton("Wave")
+              .setPosition(1025,620)
+              .setSize(20,20)
+              .setColorForeground(#50fa7b)
+              .setColorBackground(#44475a)
+              .setColorActive(#8be9fd)
+              .setItemsPerRow(4)
+              .setSpacingColumn(35)
+              .addItem("Saw",0)
+              .addItem("Pul",1)
+              .addItem("Tri",2)
+              .addItem("Sin",3)
+              ;
+    cp5.addToggle("Slicer")
+       .setPosition(1025,570)
+       .setSize(50,20)
+       .setColorForeground(#50fa7b)
+       .setColorBackground(#44475a)
+       .setColorActive(#8be9fd)
+       .setMode(ControlP5.SWITCH)
+       .setValue(false)
+       ;
   
   //OSC initialize
   oscP5 = new OscP5(this,4560);
@@ -564,6 +592,12 @@ void draw() {
   MldyMessage.add(m[count]);
   oscP5.send(MldyMessage, myRemoteLocation);
   
+  //Send Slicer Details over OSC
+  OscMessage SliceMessage = new OscMessage("/slice");
+  SliceMessage.add(slicerWaveValue);
+  SliceMessage.add(sliverBool);
+  oscP5.send(SliceMessage, myRemoteLocation);
+  
   //Send BPM
   OscMessage bpmMessage = new OscMessage("/bpm");
   float bpm = 1/fps;
@@ -707,6 +741,15 @@ void M15(int theValue) {
   m[15] = theValue;
 }
 
+void Wave(int a){
+  if(a == -1) slicerWaveValue = 0;
+  else slicerWaveValue = a;
+}
+
+void Slicer(boolean theFlag) {
+  if(theFlag) slicerBool = 1;
+  else slicerBool = 0;
+}
 
 
 
