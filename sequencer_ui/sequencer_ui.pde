@@ -294,11 +294,11 @@ void setup() {
   //Slider
   cp5.addSlider("BPM")
      .setPosition(30, height - 60)
-     .setSize(200,40)
-     .setRange(12,25)
+     .setSize(250,40)
+     .setRange(12,50)
      .setValue(24)
      .setDecimalPrecision(0)
-     .setNumberOfTickMarks(14)
+     .setNumberOfTickMarks(39)
      .snapToTickMarks(true)
      .setLabelVisible(false)
      .setColorForeground(#bd93f9)
@@ -408,7 +408,7 @@ void draw() {
   rect(30,height- 110, 200, 40 );
   rect(width - 120,height- 110, 200, 40 );
   fill(#ffffff);
-  String realbpm = String.format("%.0f",fps*60);
+  String realbpm = String.format("%.0f",(fps*60)/2);
   String realvol = String.format("%.0f",volumeValue * 100);
   text("BPM: " + realbpm, 30, height - 80);
   text("VOL: " + realvol + "%", width - 130, height - 80);
