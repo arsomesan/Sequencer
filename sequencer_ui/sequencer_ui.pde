@@ -345,6 +345,7 @@ void setup() {
     line(linepos, 200, linepos, 260);
     line(linepos, 320, linepos, 380);
     line(linepos, 440, linepos, 500);
+    line(linepos, 650, linepos, 710);
     linepos = linepos + 240;
   }
   //Add all Mutebuttons to MuteList
