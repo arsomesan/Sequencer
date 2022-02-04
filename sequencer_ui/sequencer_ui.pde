@@ -59,6 +59,13 @@ int sliderTicks1 = 120;
 
 Textlabel bpmLabel;
 
+RadioButton slicerWave;
+int slicerWaveValue;
+
+Toggle slicerToogle;
+
+int slicerBool;
+
 int[] m = new int[16];
 
 //initialize all ButtonLists
@@ -336,6 +343,29 @@ void setup() {
           knobcount = knobcount + 60;
      }
     
+    //SlicerWave
+    slicerWave = cp5.addRadioButton("Wave")
+              .setPosition(1025,620)
+              .setSize(20,20)
+              .setColorForeground(#50fa7b)
+              .setColorBackground(#44475a)
+              .setColorActive(#8be9fd)
+              .setItemsPerRow(4)
+              .setSpacingColumn(35)
+              .addItem("Saw",0)
+              .addItem("Pul",1)
+              .addItem("Tri",2)
+              .addItem("Sin",3)
+              ;
+    slicerToogle = cp5.addToggle("Slicer")
+       .setPosition(width-115,680)
+       .setSize(50,20)
+       .setColorForeground(#50fa7b)
+       .setColorBackground(#44475a)
+       .setColorActive(#8be9fd)
+       .setMode(ControlP5.SWITCH)
+       .setValue(false)
+       ;
   
   //OSC initialize
   oscP5 = new OscP5(this,4560);
@@ -422,6 +452,7 @@ void draw() {
     text("SNARE", 90, 310); 
     text("PERCS", 90, 430);
     text("MELODY", 90, 550);
+    text("SLICER CONTROL", width - 275, 585);
 
   }
   
@@ -563,6 +594,12 @@ void draw() {
   OscMessage MldyMessage = new OscMessage("/mldy");
   MldyMessage.add(m[count]);
   oscP5.send(MldyMessage, myRemoteLocation);
+  
+  //Send Slicer Details over OSC
+  OscMessage SliceMessage = new OscMessage("/slice");
+  SliceMessage.add(slicerWaveValue);
+  SliceMessage.add(slicerBool);
+  oscP5.send(SliceMessage, myRemoteLocation);
   
   //Send BPM
   OscMessage bpmMessage = new OscMessage("/bpm");
@@ -707,6 +744,15 @@ void M15(int theValue) {
   m[15] = theValue;
 }
 
+void Wave(int a){
+  if(a == -1) slicerWaveValue = 0;
+  else slicerWaveValue = a;
+}
+
+void Slicer(boolean theFlag) {
+  if(theFlag) slicerBool = 1;
+  else slicerBool = 0;
+}
 
 
 
@@ -861,10 +907,13 @@ class ButtonRec {
       hihtAttackKnob.setValue(0);
       snareAttackKnob.setValue(0);
       percAttackKnob.setValue(0);
+      mldyAttackKnob.setValue(0);
       baseReleaseKnob.setValue(0);
       hihtReleaseKnob.setValue(0);
       snareReleaseKnob.setValue(0);
       percReleaseKnob.setValue(0);
+      mldyReleaseKnob.setValue(0);
+      slicerToogle.setValue(false);
     }
     
   }
