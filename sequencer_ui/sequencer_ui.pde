@@ -62,6 +62,8 @@ Textlabel bpmLabel;
 RadioButton slicerWave;
 int slicerWaveValue;
 
+Toggle slicerToogle;
+
 int slicerBool;
 
 int[] m = new int[16];
@@ -355,8 +357,8 @@ void setup() {
               .addItem("Tri",2)
               .addItem("Sin",3)
               ;
-    cp5.addToggle("Slicer")
-       .setPosition(1025,570)
+    slicerToogle = cp5.addToggle("Slicer")
+       .setPosition(width-115,680)
        .setSize(50,20)
        .setColorForeground(#50fa7b)
        .setColorBackground(#44475a)
@@ -450,6 +452,7 @@ void draw() {
     text("SNARE", 90, 310); 
     text("PERCS", 90, 430);
     text("MELODY", 90, 550);
+    text("SLICER CONTROL", width - 275, 585);
 
   }
   
@@ -595,7 +598,7 @@ void draw() {
   //Send Slicer Details over OSC
   OscMessage SliceMessage = new OscMessage("/slice");
   SliceMessage.add(slicerWaveValue);
-  SliceMessage.add(sliverBool);
+  SliceMessage.add(slicerBool);
   oscP5.send(SliceMessage, myRemoteLocation);
   
   //Send BPM
@@ -904,10 +907,13 @@ class ButtonRec {
       hihtAttackKnob.setValue(0);
       snareAttackKnob.setValue(0);
       percAttackKnob.setValue(0);
+      mldyAttackKnob.setValue(0);
       baseReleaseKnob.setValue(0);
       hihtReleaseKnob.setValue(0);
       snareReleaseKnob.setValue(0);
       percReleaseKnob.setValue(0);
+      mldyReleaseKnob.setValue(0);
+      slicerToogle.setValue(false);
     }
     
   }
