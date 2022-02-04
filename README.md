@@ -10,7 +10,7 @@ __Dependencies:__
 __will only work with Processing 2.2.1 or below__
 
 ### Screenshot
-![screenshot from the Programm](https://github.com/Brian-Farmer/sequencer/blob/master/jumbotune.jpg?raw=true)
+![screenshot from the Programm](https://github.com/Brian-Farmer/sequencer/blob/master/media/jumbotune.gif?raw=true)
 
 
 
