@@ -36,6 +36,9 @@ float snareAttackValue;
 Knob percAttackKnob;
 float percAttackValue;
 
+Knob mldyAttackKnob;
+float mldyAttackValue;
+
 Knob baseReleaseKnob;
 float baseReleaseValue;
 
@@ -47,6 +50,9 @@ float snareReleaseValue;
 
 Knob percReleaseKnob;
 float percReleaseValue;
+
+Knob mldyReleaseKnob;
+float mldyReleaseValue;
 
 Slider bpm;
 int sliderTicks1 = 120;
@@ -203,7 +209,19 @@ void setup() {
                .setColorForeground(#8be9fd)
                .setColorBackground(#282a36)
                .setColorActive(#50fa7b)
-               ;      
+               ;   
+  mldyAttackKnob = cp5.addKnob("MAttk")
+               .setRange(0,1)
+               .setValue(0)
+               .setPosition(width - 200, 650)
+               .setRadius(10)
+               .setDragDirection(Knob.VERTICAL)
+               .setHeight(30)
+               .setSize(60,60)
+               .setColorForeground(#8be9fd)
+               .setColorBackground(#282a36)
+               .setColorActive(#50fa7b)
+               ;               
      
      
   //Release Knobs  
@@ -258,7 +276,20 @@ void setup() {
                .setColorForeground(#8be9fd)
                .setColorBackground(#282a36)
                .setColorActive(#50fa7b)
-               ;                  
+               ;  
+               
+  mldyReleaseKnob = cp5.addKnob("MRel")
+               .setRange(0,1)
+               .setValue(0)
+               .setPosition(width - 280, 650)
+               .setRadius(10)
+               .setDragDirection(Knob.VERTICAL)
+               .setHeight(30)
+               .setSize(60,60)
+               .setColorForeground(#8be9fd)
+               .setColorBackground(#282a36)
+               .setColorActive(#50fa7b)
+               ;                 
 
   //Slider
   cp5.addSlider("BPM")
@@ -516,6 +547,7 @@ void draw() {
   attkMessage.add(hihtAttackValue);
   attkMessage.add(snareAttackValue);
   attkMessage.add(percAttackValue);
+  attkMessage.add(mldyAttackValue);
   oscP5.send(attkMessage, myRemoteLocation);
   
   //Send Release over OSC
@@ -524,6 +556,7 @@ void draw() {
   RelMessage.add(hihtReleaseValue);
   RelMessage.add(snareReleaseValue);
   RelMessage.add(percReleaseValue);
+  RelMessage.add(mldyReleaseValue);
   oscP5.send(RelMessage, myRemoteLocation);
   
   //Send Melody Note over OSC
@@ -588,6 +621,11 @@ void PAttk(float theValue) {
   
 }
 
+void MAttk(float theValue) {
+  mldyAttackValue = theValue;
+  
+}
+
 void BRel(float theValue) {
   baseReleaseValue = theValue;
   
@@ -603,8 +641,13 @@ void SRel(float theValue) {
   
 }
 
-void PDac(float theValue) {
+void PRel(float theValue) {
   percReleaseValue = theValue;
+  
+}
+
+void MRel(float theValue) {
+  mldyReleaseValue = theValue;
   
 }
 

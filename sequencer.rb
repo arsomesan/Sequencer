@@ -40,6 +40,7 @@ live_loop :getattk do
   set :hattk, attack[1]
   set :sattk, attack[2]
   set :pattk, attack[3]
+  set :mattk, attack[4]
 end
 
 live_loop :getrelease do
@@ -49,6 +50,7 @@ live_loop :getrelease do
   set :hrel, release[1]
   set :srel, release[2]
   set :prel, release[3]
+  set :mrel, release[4]
 end
 
 live_loop :getmldy do
@@ -101,8 +103,9 @@ end
 live_loop :_melody do
   use_real_time
   cue :start_base
+  bamp = get(:globalAmp)
   mbool = get(:mldyBool)
-  play get(:tune), amp: 1 * mbool
+  play get(:tune), amp: (bamp * 0.5) * mbool, attack: get(:mattk), decay: get(:mrel)
   sleep get(:globalBpm)
 end
 
