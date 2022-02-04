@@ -18,4 +18,5 @@ __will only work with Processing 2.2.1 or below__
 
 
 - *Name by senjellam*
-- *Icon made by Freepic*
+- *color scheme from* <a href="https://draculatheme.com/contribute">*Dracula*</a> 
+- <a href="https://www.flaticon.com/free-icons/graph" title="graph icons">Graph icons created by Freepik - Flaticon</a>
