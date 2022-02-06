@@ -13,6 +13,7 @@ NetAddress myRemoteLocation;
 float bps;
 float bpmm = (1/(120/60))*1000;
 float timer = 0;
+String pValue = "PAUSE";
 
 //initialite Controllers
 float volumeValue;
@@ -454,7 +455,7 @@ void draw() {
   text("BPM: " + realbpm, 30, height - 80);
   text("VOL: " + realvol + "%", width - 130, height - 80);
   fill(#ffffff);
-  text("PAUSE", width - 360, height - 31);
+  text(pValue, width - 360, height - 31);
   text("CLEAR", width - 240, height - 31);
   if(fontcount == 0) {
     fill(#6272a4);
@@ -941,20 +942,20 @@ class ButtonRec {
   void pauseCheck( int _x, int _y ){
     if( _x > x && _y > y && _x < x+w && _y < y+h ){
       if(check) {
-      
+        bpmm = 1/bps*1000;
+        timer = millis();
+        timer = 0;
         check = false;
         c = #ffb86c;
         pause.draw();
-        loop();
+        pValue = "PAUSE";
         
       } else {
         
         c = #ff5555;
-        text("PAUSE", width - 360, height - 31);
-        pause.draw();
-        text("PLAY", width - 350, height - 31);
+        
+        bpmm = 9999999999999999999999999999999999.9;
         check = true;
-        noLoop();
         OscMessage baseMessage = new OscMessage("/sec");
         baseMessage.add(0);
         baseMessage.add(0);
@@ -962,6 +963,8 @@ class ButtonRec {
         baseMessage.add(0);
         baseMessage.add(0);
         oscP5.send(baseMessage, myRemoteLocation);
+        pValue = "PLAY";
+        
         
       }
      
