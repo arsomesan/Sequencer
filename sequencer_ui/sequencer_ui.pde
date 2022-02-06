@@ -491,9 +491,6 @@ void draw() {
   
 
   if(millis() > timer) {
-    print(millis() + "\n");
-    print(timer + "\n");
-    print(bpmm);
       //init previous PlayRecs
       Rec prevRec = (Rec) rects.get(1);
       Rec prevHiht = (Rec) hiht.get(1);
@@ -712,7 +709,6 @@ void BPM(int theValue) {
   fps = tmp / 60;
   bps = fps;
   bpmm = 1/bps*1000;
-  print(bpmm + "\n");
 }
 
 void M0(int theValue) {
@@ -944,7 +940,6 @@ class ButtonRec {
       if(check) {
         bpmm = 1/bps*1000;
         timer = millis();
-        timer = 0;
         check = false;
         c = #ffb86c;
         pause.draw();
@@ -954,7 +949,7 @@ class ButtonRec {
         
         c = #ff5555;
         
-        bpmm = 9999999999999999999999999999999999.9;
+        bpmm = Float.MAX_VALUE;
         check = true;
         OscMessage baseMessage = new OscMessage("/sec");
         baseMessage.add(0);
