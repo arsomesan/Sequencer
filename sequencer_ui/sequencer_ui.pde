@@ -9,6 +9,11 @@ ControlP5 cp5;
 
 NetAddress myRemoteLocation;
 
+
+float bps;
+float bpmm = (1/(120/60))*1000;
+float timer = 0;
+
 //initialite Controllers
 float volumeValue;
 
@@ -105,7 +110,7 @@ void setup() {
   
   background(#282a36);
   size(1300,900);
-  frameRate(fps);
+  frameRate(60);
   
   cp5 = new ControlP5(this);
   
@@ -417,11 +422,17 @@ void setup() {
     val++;
     mutepos = mutepos + 120;
   }
+  
 }
 
   int count = 0;
   int fontcount = 0;
+  
+  
+  
+  
 void draw() {
+  
   //Draw Icon
   icon.resize(60, 60);
   image(icon, (width/2) - 20, height - 85);
@@ -475,142 +486,149 @@ void draw() {
     ButtonRec aMute = (ButtonRec) mute.get(i);
     aMute.draw();
   }
-
   
-  
-  //init previous PlayRecs
-  Rec prevRec = (Rec) rects.get(1);
-  Rec prevHiht = (Rec) hiht.get(1);
-  Rec prevSnare = (Rec) snare.get(1);
-  Rec prevPerc = (Rec) perc.get(1);
-  Rec prevMldy = (Rec) mldy.get(1);
-  if(count != 0) {
-    prevRec = (Rec) rects.get(count-1);
-    prevHiht = (Rec) hiht.get(count-1);
-    prevSnare = (Rec) snare.get(count-1);
-    prevPerc = (Rec) perc.get(count-1);
-    prevMldy = (Rec) mldy.get(count-1);
-  }
-  else {
-    prevRec = (Rec) rects.get(rects.size()-1);
-    prevHiht = (Rec) hiht.get(hiht.size()-1);  
-    prevSnare = (Rec) snare.get(snare.size()-1);
-    prevPerc = (Rec) perc.get(perc.size()-1);
-    prevMldy = (Rec) mldy.get(mldy.size()-1);
-  }
-  
-  //Blink previous Recs for every Iteration
-  prevRec.time = false;
-  prevHiht.time = false;
-  prevSnare.time = false;
-  prevPerc.time = false;
-  prevMldy.time = false;
-  
-  prevRec.blink();
-  prevHiht.blink();
-  prevSnare.blink();
-  prevPerc.blink();
-  prevMldy.blink();
-  
-  
-  //Blink Current Recs for every iteration
-  Rec aRec = (Rec) rects.get(count);
-  Rec aHiht = (Rec) hiht.get(count);
-  Rec aSnare = (Rec) snare.get(count);
-  Rec aPerc = (Rec) perc.get(count);
-  Rec aMldy = (Rec) mldy.get(count);
-  
-  aRec.time = true;
-  aHiht.time = true;
-  aSnare.time = true;
-  aPerc.time = true;
-  aMldy.time = true;
-  
-  aRec.blink();
-  aHiht.blink();
-  aSnare.blink();
-  aPerc.blink();
-  aMldy.blink();
   
 
-  
-  OscMessage baseMessage = new OscMessage("/sec");
-  //give Base value for every iteration
-  
-  if(aRec.b && aRec.mute != true) baseMessage.add(1);
-  else baseMessage.add(0);
-  
-  //give Hiht value for every iteration
-  if(aHiht.b && aHiht.mute != true) baseMessage.add(1);
-  else baseMessage.add(0);
-  
-  //give Snare value for every iteration
-  if(aSnare.b && aSnare.mute != true) baseMessage.add(1);
-  else baseMessage.add(0);
-  
-  //give Percussion value for every iteration
-  if(aPerc.b && aPerc.mute != true) baseMessage.add(1);
-  else baseMessage.add(0);
-  
-  //give Melody value for every iteration
-  if(aMldy.b && aMldy.mute != true) baseMessage.add(1);
-  else baseMessage.add(0);
-  
-  //Send Instrument Booleans
-  oscP5.send(baseMessage, myRemoteLocation);
-  
-  //Send Amplitude over OSC
-  OscMessage ampMessage = new OscMessage("/amp");
-  ampMessage.add(volumeValue);
-  oscP5.send(ampMessage, myRemoteLocation);
-  
-  //Send Rate over OSC
-  OscMessage rateMessage = new OscMessage("/rate");
-  rateMessage.add(baseRateValue);
-  rateMessage.add(hihtRateValue);
-  rateMessage.add(snareRateValue);
-  rateMessage.add(percRateValue);
-  oscP5.send(rateMessage, myRemoteLocation);
-  
-  //Send Attack over OSC
-  OscMessage attkMessage = new OscMessage("/attk");
-  attkMessage.add(baseAttackValue);
-  attkMessage.add(hihtAttackValue);
-  attkMessage.add(snareAttackValue);
-  attkMessage.add(percAttackValue);
-  attkMessage.add(mldyAttackValue);
-  oscP5.send(attkMessage, myRemoteLocation);
-  
-  //Send Release over OSC
-  OscMessage RelMessage = new OscMessage("/rel");
-  RelMessage.add(baseReleaseValue);
-  RelMessage.add(hihtReleaseValue);
-  RelMessage.add(snareReleaseValue);
-  RelMessage.add(percReleaseValue);
-  RelMessage.add(mldyReleaseValue);
-  oscP5.send(RelMessage, myRemoteLocation);
-  
-  //Send Melody Note over OSC
-  OscMessage MldyMessage = new OscMessage("/mldy");
-  MldyMessage.add(m[count]);
-  oscP5.send(MldyMessage, myRemoteLocation);
-  
-  //Send Slicer Details over OSC
-  OscMessage SliceMessage = new OscMessage("/slice");
-  SliceMessage.add(slicerWaveValue);
-  SliceMessage.add(slicerBool);
-  oscP5.send(SliceMessage, myRemoteLocation);
-  
-  //Send BPM
-  OscMessage bpmMessage = new OscMessage("/bpm");
-  float bpm = 1/fps;
-  bpmMessage.add(bpm);
-  oscP5.send(bpmMessage, myRemoteLocation);
-  
-  //counter
-  count++;
-  //restart counter after 16 iterations
-  if(count == 16) count = 0;
+  if(millis() > timer) {
+    print(millis() + "\n");
+    print(timer + "\n");
+    print(bpmm);
+      //init previous PlayRecs
+      Rec prevRec = (Rec) rects.get(1);
+      Rec prevHiht = (Rec) hiht.get(1);
+      Rec prevSnare = (Rec) snare.get(1);
+      Rec prevPerc = (Rec) perc.get(1);
+      Rec prevMldy = (Rec) mldy.get(1);
+      if(count != 0) {
+        prevRec = (Rec) rects.get(count-1);
+        prevHiht = (Rec) hiht.get(count-1);
+        prevSnare = (Rec) snare.get(count-1);
+        prevPerc = (Rec) perc.get(count-1);
+        prevMldy = (Rec) mldy.get(count-1);
+      }
+      else {
+        prevRec = (Rec) rects.get(rects.size()-1);
+        prevHiht = (Rec) hiht.get(hiht.size()-1);  
+        prevSnare = (Rec) snare.get(snare.size()-1);
+        prevPerc = (Rec) perc.get(perc.size()-1);
+        prevMldy = (Rec) mldy.get(mldy.size()-1);
+      }
+      
+      //Blink previous Recs for every Iteration
+      prevRec.time = false;
+      prevHiht.time = false;
+      prevSnare.time = false;
+      prevPerc.time = false;
+      prevMldy.time = false;
+      
+      prevRec.blink();
+      prevHiht.blink();
+      prevSnare.blink();
+      prevPerc.blink();
+      prevMldy.blink();
+      
+      
+      //Blink Current Recs for every iteration
+      Rec aRec = (Rec) rects.get(count);
+      Rec aHiht = (Rec) hiht.get(count);
+      Rec aSnare = (Rec) snare.get(count);
+      Rec aPerc = (Rec) perc.get(count);
+      Rec aMldy = (Rec) mldy.get(count);
+      
+      aRec.time = true;
+      aHiht.time = true;
+      aSnare.time = true;
+      aPerc.time = true;
+      aMldy.time = true;
+      
+      aRec.blink();
+      aHiht.blink();
+      aSnare.blink();
+      aPerc.blink();
+      aMldy.blink();
+      
+    
+      
+      OscMessage baseMessage = new OscMessage("/sec");
+      //give Base value for every iteration
+      
+      if(aRec.b && aRec.mute != true) baseMessage.add(1);
+      else baseMessage.add(0);
+      
+      //give Hiht value for every iteration
+      if(aHiht.b && aHiht.mute != true) baseMessage.add(1);
+      else baseMessage.add(0);
+      
+      //give Snare value for every iteration
+      if(aSnare.b && aSnare.mute != true) baseMessage.add(1);
+      else baseMessage.add(0);
+      
+      //give Percussion value for every iteration
+      if(aPerc.b && aPerc.mute != true) baseMessage.add(1);
+      else baseMessage.add(0);
+      
+      //give Melody value for every iteration
+      if(aMldy.b && aMldy.mute != true) baseMessage.add(1);
+      else baseMessage.add(0);
+      
+      //Send Instrument Booleans
+      oscP5.send(baseMessage, myRemoteLocation);
+      
+      //Send Amplitude over OSC
+      OscMessage ampMessage = new OscMessage("/amp");
+      ampMessage.add(volumeValue);
+      oscP5.send(ampMessage, myRemoteLocation);
+      
+      //Send Rate over OSC
+      OscMessage rateMessage = new OscMessage("/rate");
+      rateMessage.add(baseRateValue);
+      rateMessage.add(hihtRateValue);
+      rateMessage.add(snareRateValue);
+      rateMessage.add(percRateValue);
+      oscP5.send(rateMessage, myRemoteLocation);
+      
+      //Send Attack over OSC
+      OscMessage attkMessage = new OscMessage("/attk");
+      attkMessage.add(baseAttackValue);
+      attkMessage.add(hihtAttackValue);
+      attkMessage.add(snareAttackValue);
+      attkMessage.add(percAttackValue);
+      attkMessage.add(mldyAttackValue);
+      oscP5.send(attkMessage, myRemoteLocation);
+      
+      //Send Release over OSC
+      OscMessage RelMessage = new OscMessage("/rel");
+      RelMessage.add(baseReleaseValue);
+      RelMessage.add(hihtReleaseValue);
+      RelMessage.add(snareReleaseValue);
+      RelMessage.add(percReleaseValue);
+      RelMessage.add(mldyReleaseValue);
+      oscP5.send(RelMessage, myRemoteLocation);
+      
+      //Send Melody Note over OSC
+      OscMessage MldyMessage = new OscMessage("/mldy");
+      MldyMessage.add(m[count]);
+      oscP5.send(MldyMessage, myRemoteLocation);
+      
+      //Send Slicer Details over OSC
+      OscMessage SliceMessage = new OscMessage("/slice");
+      SliceMessage.add(slicerWaveValue);
+      SliceMessage.add(slicerBool);
+      oscP5.send(SliceMessage, myRemoteLocation);
+      
+      //Send BPM
+      OscMessage bpmMessage = new OscMessage("/bpm");
+      float bpm = 1/fps;
+      bpmMessage.add(bpm);
+      oscP5.send(bpmMessage, myRemoteLocation);
+      
+      //counter
+      count++;
+      //restart counter after 16 iterations
+      if(count == 16) count = 0;
+      
+      timer = timer + bpmm;
+  }
 
 }
 
@@ -691,7 +709,9 @@ void MRel(float theValue) {
 void BPM(int theValue) { 
   float tmp = theValue * 10;
   fps = tmp / 60;
-  frameRate(fps);
+  bps = fps;
+  bpmm = 1/bps*1000;
+  print(bpmm + "\n");
 }
 
 void M0(int theValue) {
