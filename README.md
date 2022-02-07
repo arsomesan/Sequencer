@@ -1,6 +1,8 @@
- 
-# Sequencer using Sonic Pi and Processing
-__This Project is still a work in progress.__
+
+# JUMBOTUNE
+### Sequencer using Sonic Pi and Processing.
+
+This Project is still a work in progress.
 _And will only work with Processing 2.2.1 or below_
 
 ## Description:
