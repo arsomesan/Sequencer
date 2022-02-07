@@ -24,7 +24,7 @@ __Dependencies:__
 
 
 ### Click <a href="https://www.youtube.com/watch?v=-TS_Vf84kjM"><b>LINK</b></a> for Example Video 
-### Screenshot
+### Example Gif
 ![screenshot from the Programm](https://github.com/Brian-Farmer/sequencer/blob/master/media/jumbotune.gif?raw=true)
 
 
