@@ -29,6 +29,9 @@ float snareAmpValue;
 Knob percAmpKnob;
 float percAmpValue;
 
+Knob mldyAmpKnob;
+float mldyAmpValue;
+
 float volumeValue;
 
 Knob baseRateKnob;
@@ -145,9 +148,9 @@ void setup() {
                  ;
                  
   hihtAmpKnob = cp5.addKnob("HAmp")
-               .setRange(0.1,10)
+               .setRange(0,10)
                .setValue(1)
-               .setPosition(width - 120, 195)
+               .setPosition(width - 360, 195)
                .setRadius(10)
                .setHeight(30)
                .setSize(60,60)
@@ -157,9 +160,9 @@ void setup() {
                ;
 
   snareAmpKnob = cp5.addKnob("SAmp")
-               .setRange(0.1,10)
+               .setRange(0,10)
                .setValue(1)
-               .setPosition(width - 120, 315)
+               .setPosition(width - 360, 315)
                .setRadius(10)
                .setHeight(30)
                .setSize(60,60)
@@ -168,17 +171,29 @@ void setup() {
                .setColorActive(#50fa7b)
                ;     
      
-  percAmpKnob = cp5.addKnob("Amp")
-               .setRange(0.1,10)
+  percAmpKnob = cp5.addKnob("PAmp")
+               .setRange(0,10)
                .setValue(1)
-               .setPosition(width - 120, 435)
+               .setPosition(width - 360, 435)
                .setRadius(10)
                .setHeight(30)
                .setSize(60,60)
                .setColorForeground(#8be9fd)
                .setColorBackground(#282a36)
                .setColorActive(#50fa7b)
-               ;   
+               ;
+  mldyAmpKnob = cp5.addKnob("MAmp")
+               .setRange(0,10)
+               .setValue(1)
+               .setPosition(width - 360, 650)
+               .setRadius(10)
+               .setHeight(30)
+               .setSize(60,60)
+               .setColorForeground(#8be9fd)
+               .setColorBackground(#282a36)
+               .setColorActive(#50fa7b)
+               ; 
+               
   
   //Rate Knobs       
   baseRateKnob = cp5.addKnob("BRate")
@@ -227,7 +242,9 @@ void setup() {
                .setColorForeground(#8be9fd)
                .setColorBackground(#282a36)
                .setColorActive(#50fa7b)
-               ;   
+               ;
+               
+ 
   
   //Attack Knobs  
            
@@ -375,7 +392,7 @@ void setup() {
      .setValue(0.5)
      .snapToTickMarks(true)
      .setLabelVisible(false)
-     .setNumberOfTickMarks(21)
+     .setNumberOfTickMarks(100)
      .setDecimalPrecision(1)
      .setColorForeground(#bd93f9)
      .setColorBackground(#282a36)
@@ -576,6 +593,13 @@ void draw() {
       Rec aMldy = (Rec) mldy.get(count);
       
            OscMessage baseMessage = new OscMessage("/sec");
+           
+      //Send BPM
+      OscMessage bpmMessage = new OscMessage("/bpm");
+      float bpm = 1/fps;
+      bpmMessage.add(bpm);
+      oscP5.send(bpmMessage, myRemoteLocation);
+      
       //give Base value for every iteration
       
       if(aRec.b && aRec.mute != true) baseMessage.add(1);
@@ -603,7 +627,14 @@ void draw() {
       //Send Amplitude over OSC
       OscMessage ampMessage = new OscMessage("/amp");
       ampMessage.add(volumeValue);
+      ampMessage.add(baseAmpValue);
+      ampMessage.add(hihtAmpValue);
+      ampMessage.add(snareAmpValue);
+      ampMessage.add(percAmpValue);
+      ampMessage.add(mldyAmpValue);
       oscP5.send(ampMessage, myRemoteLocation);
+      
+      //Send Specific Amplitude over OSC
       
       //Send Rate over OSC
       OscMessage rateMessage = new OscMessage("/rate");
@@ -641,12 +672,6 @@ void draw() {
       SliceMessage.add(slicerWaveValue);
       SliceMessage.add(slicerBool);
       oscP5.send(SliceMessage, myRemoteLocation);
-      
-      //Send BPM
-      OscMessage bpmMessage = new OscMessage("/bpm");
-      float bpm = 1/fps;
-      bpmMessage.add(bpm);
-      oscP5.send(bpmMessage, myRemoteLocation);
       
       
       //Blink previous Recs for every Iteration
@@ -691,6 +716,26 @@ void draw() {
 
 void Volume(float theValue) {
   volumeValue = theValue;
+}
+
+void BAmp(float theValue) {
+  baseAmpValue = theValue;
+}
+
+void HAmp(float theValue) {
+  hihtAmpValue = theValue;
+}
+
+void SAmp(float theValue) {
+  snareAmpValue = theValue;
+}
+
+void PAmp(float theValue) {
+  percAmpValue = theValue;
+}
+
+void MAmp(float theValue) {
+  mldyAmpValue = theValue;
 }
 
 void BRate(float theValue) {
@@ -990,6 +1035,11 @@ class ButtonRec {
       percReleaseKnob.setValue(0);
       mldyReleaseKnob.setValue(0);
       slicerToogle.setValue(false);
+      baseAmpKnob.setValue(1);
+      hihtAmpKnob.setValue(1);
+      snareAmpKnob.setValue(1);
+      percAmpKnob.setValue(1);
+      mldyAmpKnob.setValue(1);
     }
     
   }

@@ -22,6 +22,11 @@ live_loop :getamp do
   use_real_time
   amp = sync "/osc*/amp"
   set :globalAmp, amp[0]
+  set :bamp, amp[1]
+  set :hamp, amp[2]
+  set :samp, amp[3]
+  set :pamp, amp[4]
+  set :mamp, amp[5]
 end
 
 live_loop :getrate do
@@ -68,52 +73,44 @@ end
 
 
 live_loop :_base do
-  sync :start_base
   use_real_time
   bbool = get(:baseBool)
-  bamp = get(:globalAmp)
   baserate = get(:brate)
-  sample :bd_haus, amp: (bamp * 4) * bbool, rate: baserate, attack: get(:battk), release: get(:brel)
+  sample :bd_klub, amp: (get(:globalAmp) * get(:bamp)) * bbool, rate: baserate, attack: get(:battk), release: get(:brel)
   sleep get(:globalBpm)
 end
 
 live_loop :_hiht do
   use_real_time
-  cue :start_base
   hbool = get(:hihtBool)
-  bamp = get(:globalAmp)
   hihtrate = get(:hrate)
-  sample :drum_cymbal_closed, amp: (bamp * 1.5) * hbool, rate: hihtrate, attack: get(:hattk), release: get(:hrel)
+  sample :drum_cymbal_closed, amp: (get(:globalAmp) * get(:hamp)) * hbool, rate: hihtrate, attack: get(:hattk), release: get(:hrel)
   sleep get(:globalBpm)
 end
 
 live_loop :_snare do
   use_real_time
   sbool = get(:snareBool)
-  bamp = get(:globalAmp)
   snarerate = get(:srate)
-  sample :drum_snare_soft, amp: (bamp * 1) * sbool, rate: snarerate, attack: get(:sattk), sustain: 1, release: get(:srel)
+  sample :drum_snare_soft, amp: (get(:globalAmp) * get(:samp)) * sbool, rate: snarerate, attack: get(:sattk), sustain: 1, release: get(:srel)
   sleep get(:globalBpm)
 end
 
 live_loop :_perc do
   use_real_time
-  cue :start_base
   pbool = get(:percBool)
-  bamp = get(:globalAmp)
   percrate = get(:prate)
-  sample :perc_snap, amp: (bamp * 1.5) * pbool, rate: percrate, attack: get(:pattk), release: get(:prel)
+  sample :perc_snap, amp: (get(:globalAmp) * get(:pamp)) * pbool, rate: percrate, attack: get(:pattk), release: get(:prel)
   sleep get(:globalBpm)
 end
 
 
 live_loop :_melody do
   use_real_time
-  cue :start_base
   bamp = get(:globalAmp)
   mbool = get(:mldyBool)
   with_fx :slicer, phase: 0.25, wave: get(:slicerwave), mix: get(:slicerbool) do
-    play get(:tune), amp: (bamp * 0.2) * mbool, attack: get(:mattk), decay: get(:mrel)
+    play get(:tune), amp: (get(:globalAmp) * get(:mamp)) * mbool, attack: get(:mattk), decay: get(:mrel)
     sleep get(:globalBpm)
   end
 end
