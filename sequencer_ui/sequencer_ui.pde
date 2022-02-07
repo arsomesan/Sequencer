@@ -491,6 +491,10 @@ void draw() {
   
 
   if(millis() > timer) {
+    
+    
+    
+    
       //init previous PlayRecs
       Rec prevRec = (Rec) rects.get(1);
       Rec prevHiht = (Rec) hiht.get(1);
@@ -512,18 +516,7 @@ void draw() {
         prevMldy = (Rec) mldy.get(mldy.size()-1);
       }
       
-      //Blink previous Recs for every Iteration
-      prevRec.time = false;
-      prevHiht.time = false;
-      prevSnare.time = false;
-      prevPerc.time = false;
-      prevMldy.time = false;
-      
-      prevRec.blink();
-      prevHiht.blink();
-      prevSnare.blink();
-      prevPerc.blink();
-      prevMldy.blink();
+
       
       
       //Blink Current Recs for every iteration
@@ -533,21 +526,7 @@ void draw() {
       Rec aPerc = (Rec) perc.get(count);
       Rec aMldy = (Rec) mldy.get(count);
       
-      aRec.time = true;
-      aHiht.time = true;
-      aSnare.time = true;
-      aPerc.time = true;
-      aMldy.time = true;
-      
-      aRec.blink();
-      aHiht.blink();
-      aSnare.blink();
-      aPerc.blink();
-      aMldy.blink();
-      
-    
-      
-      OscMessage baseMessage = new OscMessage("/sec");
+           OscMessage baseMessage = new OscMessage("/sec");
       //give Base value for every iteration
       
       if(aRec.b && aRec.mute != true) baseMessage.add(1);
@@ -619,6 +598,37 @@ void draw() {
       float bpm = 1/fps;
       bpmMessage.add(bpm);
       oscP5.send(bpmMessage, myRemoteLocation);
+      
+      
+      //Blink previous Recs for every Iteration
+      prevRec.time = false;
+      prevHiht.time = false;
+      prevSnare.time = false;
+      prevPerc.time = false;
+      prevMldy.time = false;
+      
+      prevRec.blink();
+      prevHiht.blink();
+      prevSnare.blink();
+      prevPerc.blink();
+      prevMldy.blink();
+      
+      
+      aRec.time = true;
+      aHiht.time = true;
+      aSnare.time = true;
+      aPerc.time = true;
+      aMldy.time = true;
+      
+      aRec.blink();
+      aHiht.blink();
+      aSnare.blink();
+      aPerc.blink();
+      aMldy.blink();
+      
+    
+      
+ 
       
       //counter
       count++;
@@ -938,7 +948,6 @@ class ButtonRec {
   void pauseCheck( int _x, int _y ){
     if( _x > x && _y > y && _x < x+w && _y < y+h ){
       if(check) {
-        bpmm = 1/bps*1000;
         timer = millis();
         check = false;
         c = #ffb86c;
@@ -947,9 +956,8 @@ class ButtonRec {
         
       } else {
         
-        c = #ff5555;
-        
-        bpmm = Float.MAX_VALUE;
+        c = #ff5555;  
+        timer = Float.MAX_VALUE;     
         check = true;
         OscMessage baseMessage = new OscMessage("/sec");
         baseMessage.add(0);
