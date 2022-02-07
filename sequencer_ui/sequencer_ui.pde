@@ -10,6 +10,7 @@ ControlP5 cp5;
 NetAddress myRemoteLocation;
 
 
+float _bpm;
 float bps;
 float bpmm = (1/(120/60))*1000;
 float timer = 0;
@@ -374,10 +375,10 @@ void setup() {
   cp5.addSlider("BPM")
      .setPosition(30, height - 60)
      .setSize(250,40)
-     .setRange(12,50)
-     .setValue(24)
+     .setRange(1,250)
+     .setValue(240)
      .setDecimalPrecision(0)
-     .setNumberOfTickMarks(39)
+     .setNumberOfTickMarks(251)
      .snapToTickMarks(true)
      .setLabelVisible(false)
      .setColorForeground(#bd93f9)
@@ -516,7 +517,7 @@ void draw() {
   rect(30,height- 110, 200, 40 );
   rect(width - 120,height- 110, 200, 40 );
   fill(#ffffff);
-  String realbpm = String.format("%.0f",(fps*60)/2);
+  String realbpm = String.format("%.0f",_bpm);
   String realvol = String.format("%.0f",volumeValue * 100);
   text("BPM: " + realbpm, 30, height - 80);
   text("VOL: " + realvol + "%", width - 130, height - 80);
@@ -592,16 +593,17 @@ void draw() {
       Rec aPerc = (Rec) perc.get(count);
       Rec aMldy = (Rec) mldy.get(count);
       
-           OscMessage baseMessage = new OscMessage("/sec");
+      
            
       //Send BPM
       OscMessage bpmMessage = new OscMessage("/bpm");
-      float bpm = 1/fps;
+      float tmp = bps * 2;
+      float bpm = 1/tmp;
       bpmMessage.add(bpm);
       oscP5.send(bpmMessage, myRemoteLocation);
       
       //give Base value for every iteration
-      
+      OscMessage baseMessage = new OscMessage("/sec");
       if(aRec.b && aRec.mute != true) baseMessage.add(1);
       else baseMessage.add(0);
       
@@ -809,10 +811,13 @@ void MRel(float theValue) {
 }
 
 void BPM(int theValue) { 
-  float tmp = theValue * 10;
-  fps = tmp / 60;
-  bps = fps;
-  bpmm = 1/bps*1000;
+  float tmp = theValue;
+  print(tmp + "\n");
+  _bpm = tmp;
+  bps = tmp / 60;
+  float temp = bps * 2;
+  bpmm = 1/temp*1000;
+  print(bpmm);
 }
 
 void M0(int theValue) {
