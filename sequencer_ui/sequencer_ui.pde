@@ -103,11 +103,11 @@ void setup() {
   
   //Programm Icon
   icon = loadImage("loop.png");
-  ImageIcon barIcon = new ImageIcon(loadBytes("loop.png"));
-  frame.setIconImage(barIcon.getImage());
-  frame.setTitle("JUMBOTUNE");
-  //surface.setIcon(icon);
-  //surface.setTitle("JUMBOTUNE");
+  //ImageIcon barIcon = new ImageIcon(loadBytes("loop.png"));
+  //frame.setIconImage(barIcon.getImage());
+  //frame.setTitle("JUMBOTUNE");
+  surface.setIcon(icon);
+  surface.setTitle("JUMBOTUNE");
   
   background(#282a36);
   size(1300,900);
