@@ -16,6 +16,19 @@ float timer = 0;
 String pValue = "PAUSE";
 
 //initialite Controllers
+
+Knob baseAmpKnob;
+float baseAmpValue;
+
+Knob hihtAmpKnob;
+float hihtAmpValue;
+
+Knob snareAmpKnob;
+float snareAmpValue;
+
+Knob percAmpKnob;
+float percAmpValue;
+
 float volumeValue;
 
 Knob baseRateKnob;
@@ -110,12 +123,62 @@ void setup() {
   surface.setTitle("JUMBOTUNE");
   
   background(#282a36);
-  size(1300,900);
+  size(1400,900);
   frameRate(60);
   
   cp5 = new ControlP5(this);
   
   //cp5.setControlFont(font);
+  
+  //Amp Knobs
+  
+  baseAmpKnob = cp5.addKnob("BAmp")
+                 .setRange(0.1,10)
+                 .setValue(1)
+                 .setPosition(width - 360, 75)
+                 .setRadius(10)
+                 .setHeight(30)
+                 .setSize(60,60)
+                 .setColorForeground(#8be9fd)
+                 .setColorBackground(#282a36)
+                 .setColorActive(#50fa7b)
+                 ;
+                 
+  hihtAmpKnob = cp5.addKnob("HAmp")
+               .setRange(0.1,10)
+               .setValue(1)
+               .setPosition(width - 120, 195)
+               .setRadius(10)
+               .setHeight(30)
+               .setSize(60,60)
+               .setColorForeground(#8be9fd)
+               .setColorBackground(#282a36)
+               .setColorActive(#50fa7b)
+               ;
+
+  snareAmpKnob = cp5.addKnob("SAmp")
+               .setRange(0.1,10)
+               .setValue(1)
+               .setPosition(width - 120, 315)
+               .setRadius(10)
+               .setHeight(30)
+               .setSize(60,60)
+               .setColorForeground(#8be9fd)
+               .setColorBackground(#282a36)
+               .setColorActive(#50fa7b)
+               ;     
+     
+  percAmpKnob = cp5.addKnob("Amp")
+               .setRange(0.1,10)
+               .setValue(1)
+               .setPosition(width - 120, 435)
+               .setRadius(10)
+               .setHeight(30)
+               .setSize(60,60)
+               .setColorForeground(#8be9fd)
+               .setColorBackground(#282a36)
+               .setColorActive(#50fa7b)
+               ;   
   
   //Rate Knobs       
   baseRateKnob = cp5.addKnob("BRate")
@@ -123,7 +186,6 @@ void setup() {
                  .setValue(1)
                  .setPosition(width - 120, 75)
                  .setRadius(10)
-                 .setDragDirection(Knob.VERTICAL)
                  .setHeight(30)
                  .setSize(60,60)
                  .setColorForeground(#8be9fd)
@@ -136,7 +198,6 @@ void setup() {
                .setValue(1)
                .setPosition(width - 120, 195)
                .setRadius(10)
-               .setDragDirection(Knob.VERTICAL)
                .setHeight(30)
                .setSize(60,60)
                .setColorForeground(#8be9fd)
@@ -149,7 +210,6 @@ void setup() {
                .setValue(1)
                .setPosition(width - 120, 315)
                .setRadius(10)
-               .setDragDirection(Knob.VERTICAL)
                .setHeight(30)
                .setSize(60,60)
                .setColorForeground(#8be9fd)
@@ -162,7 +222,6 @@ void setup() {
                .setValue(1)
                .setPosition(width - 120, 435)
                .setRadius(10)
-               .setDragDirection(Knob.VERTICAL)
                .setHeight(30)
                .setSize(60,60)
                .setColorForeground(#8be9fd)
@@ -177,7 +236,6 @@ void setup() {
                  .setValue(0)
                  .setPosition(width - 200, 75)
                  .setRadius(10)
-                 .setDragDirection(Knob.VERTICAL)
                  .setHeight(30)
                  .setSize(60,60)
                  .setColorForeground(#8be9fd)
@@ -190,7 +248,6 @@ void setup() {
                .setValue(0)
                .setPosition(width - 200, 195)
                .setRadius(10)
-               .setDragDirection(Knob.VERTICAL)
                .setHeight(30)
                .setSize(60,60)
                .setColorForeground(#8be9fd)
@@ -203,7 +260,6 @@ void setup() {
                .setValue(0)
                .setPosition(width - 200, 315)
                .setRadius(10)
-               .setDragDirection(Knob.VERTICAL)
                .setHeight(30)
                .setSize(60,60)
                .setColorForeground(#8be9fd)
@@ -216,7 +272,6 @@ void setup() {
                .setValue(0)
                .setPosition(width - 200, 435)
                .setRadius(10)
-               .setDragDirection(Knob.VERTICAL)
                .setHeight(30)
                .setSize(60,60)
                .setColorForeground(#8be9fd)
@@ -228,7 +283,6 @@ void setup() {
                .setValue(0)
                .setPosition(width - 200, 650)
                .setRadius(10)
-               .setDragDirection(Knob.VERTICAL)
                .setHeight(30)
                .setSize(60,60)
                .setColorForeground(#8be9fd)
@@ -244,7 +298,6 @@ void setup() {
                  .setValue(0)
                  .setPosition(width - 280, 75)
                  .setRadius(10)
-                 .setDragDirection(Knob.VERTICAL)
                  .setHeight(30)
                  .setSize(60,60)
                  .setColorForeground(#8be9fd)
@@ -257,7 +310,6 @@ void setup() {
                .setValue(0)
                .setPosition(width - 280, 195)
                .setRadius(10)
-               .setDragDirection(Knob.VERTICAL)
                .setHeight(30)
                .setSize(60,60)
                .setColorForeground(#8be9fd)
@@ -270,7 +322,6 @@ void setup() {
                .setValue(0)
                .setPosition(width - 280, 315)
                .setRadius(10)
-               .setDragDirection(Knob.VERTICAL)
                .setHeight(30)
                .setSize(60,60)
                .setColorForeground(#8be9fd)
@@ -283,7 +334,6 @@ void setup() {
                .setValue(0)
                .setPosition(width - 280, 435)
                .setRadius(10)
-               .setDragDirection(Knob.VERTICAL)
                .setHeight(30)
                .setSize(60,60)
                .setColorForeground(#8be9fd)
@@ -296,7 +346,6 @@ void setup() {
                .setValue(0)
                .setPosition(width - 280, 650)
                .setRadius(10)
-               .setDragDirection(Knob.VERTICAL)
                .setHeight(30)
                .setSize(60,60)
                .setColorForeground(#8be9fd)
