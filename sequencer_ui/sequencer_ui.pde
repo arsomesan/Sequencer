@@ -1067,6 +1067,7 @@ class ButtonRec {
         Rec aSnare = (Rec) snare.get(i);
         Rec aPerc = (Rec) perc.get(i);
         Rec aMldy = (Rec) mldy.get(i);
+        cp5.getController("M"+i).setValue(0);
         aRec.b = false;
         aHiht.b = false;
         aSnare.b = false;
@@ -1077,6 +1078,20 @@ class ButtonRec {
         aSnare.blink();
         aPerc.blink();
         aMldy.blink();
+        
+        aRec.mute = false;
+        aHiht.mute = false;
+        aSnare.mute = false;
+        aPerc.mute = false;
+        aMldy.mute = false;
+        
+      }
+      
+      for(int i = 0; i < mute.size(); i++) {
+        ButtonRec aMute = (ButtonRec) mute.get(i);
+        aMute.check = false;
+        aMute.c = #ffb86c;
+        aMute.draw();
       }
       baseRateKnob.setValue(1.0);
       hihtRateKnob.setValue(1.0);
@@ -1317,6 +1332,11 @@ class ButtonRec {
       if(val == 5) {
         for(int i = 0; i < 16; i++) {
           cp5.getController("M"+i).setValue(random(127));
+          Rec aMldy = (Rec) mldy.get(i);
+          int tmp = Math.round(random(1));
+          if(tmp == 1) aMldy.b = true;
+          else aMldy.b = false;
+          aMldy.blink();
         }
       }
         
