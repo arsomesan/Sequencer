@@ -98,13 +98,13 @@ ArrayList snare;
 ArrayList mute;
 ArrayList perc;
 ArrayList mldy;
+ArrayList random;
+ArrayList singleClear;
+ArrayList singleClearText;
 
 //initialize single Buttons
 ButtonRec clear;
 ButtonRec pause;
-AmpControl up;
-AmpControl down;
-Amp amp;
 
 PImage icon;
 float fps;
@@ -129,6 +129,7 @@ void setup() {
   background(#282a36);
   size(1400,900);
   frameRate(60);
+  pixelDensity(2);
   
   cp5 = new ControlP5(this);
   
@@ -376,9 +377,9 @@ void setup() {
      .setPosition(30, height - 60)
      .setSize(250,40)
      .setRange(1,250)
-     .setValue(240)
+     .setValue(120)
      .setDecimalPrecision(0)
-     .setNumberOfTickMarks(251)
+     .setNumberOfTickMarks(250)
      .snapToTickMarks(true)
      .setLabelVisible(false)
      .setColorForeground(#bd93f9)
@@ -393,7 +394,7 @@ void setup() {
      .setValue(0.5)
      .snapToTickMarks(true)
      .setLabelVisible(false)
-     .setNumberOfTickMarks(100)
+     .setNumberOfTickMarks(101)
      .setDecimalPrecision(1)
      .setColorForeground(#bd93f9)
      .setColorBackground(#282a36)
@@ -418,7 +419,7 @@ void setup() {
     
     //SlicerWave
     slicerWave = cp5.addRadioButton("Wave")
-              .setPosition(1025,620)
+              .setPosition(width - 360,620)
               .setSize(20,20)
               .setColorForeground(#50fa7b)
               .setColorBackground(#44475a)
@@ -431,7 +432,7 @@ void setup() {
               .addItem("Sin",3)
               ;
     slicerToogle = cp5.addToggle("Slicer")
-       .setPosition(width-115,680)
+       .setPosition(width-100,620)
        .setSize(50,20)
        .setColorForeground(#50fa7b)
        .setColorBackground(#44475a)
@@ -451,6 +452,9 @@ void setup() {
   perc = new ArrayList();
   mute = new ArrayList();
   mldy = new ArrayList();
+  random = new ArrayList();
+  singleClear = new ArrayList();
+  singleClearText = new ArrayList();
   
   //Clear all Button
   clear = new ButtonRec(width - 250, height - 60, 100, 40);
@@ -486,9 +490,21 @@ void setup() {
   int mutepos = 52;
   int val = 1;
   for(int i = 0; i < 5; i++) {
-    mute.add(new ButtonRec(30, mutepos, 40, 20, val));
+    mute.add(new ButtonRec(30, mutepos, 30, 20, val));
+    singleClear.add(new ButtonRec(100, mutepos, 30, 20, val));
+    textSize(15);
+    ButtonRec aSiCl = (ButtonRec) singleClear.get(i);
+    aSiCl.c = #ff5555;
     val++;
     mutepos = mutepos + 120;
+  }
+  
+  int rdmpos = 52;
+  int rdmval = 1;
+  for(int i = 0; i < 5; i++) {
+    random.add(new ButtonRec(65, rdmpos, 30, 20,#ff79c6, rdmval));
+    rdmval++;
+    rdmpos += 120;
   }
   
 }
@@ -526,13 +542,29 @@ void draw() {
   text("CLEAR", width - 240, height - 31);
   if(fontcount == 0) {
     fill(#6272a4);
-    text("BASE", 90, 70); 
-    text("HIHAT", 90, 190); 
-    text("SNARE", 90, 310); 
-    text("PERCS", 90, 430);
-    text("MELODY", 90, 550);
-    text("SLICER CONTROL", width - 275, 585);
-
+    text("BASE", 140, 70); 
+    text("HIHAT", 140, 190); 
+    text("SNARE", 140, 310); 
+    text("PERCS", 140, 430);
+    text("MELODY", 140, 550);
+    text("SLICER CONTROL", width - 360, 585);
+    textSize(15);
+    text("ON", width - 125, 635);
+    text("OFF", width - 40, 635);
+    
+    textSize(15);
+    fill(#ffb86c);
+    rect(320, height - 90, 20, 20);
+    fill(#ff79c6);
+    rect(320, height - 65, 20, 20);
+    fill(#6272a4);
+    fill(#ff5555);
+    rect(320, height - 40, 20, 20);
+    fill(#6272a4);
+    text("MUTE", 350, height - 75);
+    text("RANDOMIZER", 350, height - 50);
+    text("CLEAR", 350, height - 25);
+    
   }
   
   fontcount++;
@@ -553,9 +585,12 @@ void draw() {
   for(int i = 0; i < mute.size(); i++) {
     ButtonRec aMute = (ButtonRec) mute.get(i);
     aMute.draw();
+    ButtonRec aRdm = (ButtonRec) random.get(i);
+    aRdm.draw();
+    ButtonRec aSiCl = (ButtonRec) singleClear.get(i);
+    aSiCl.draw();
   }
-  
-  
+
 
   if(millis() > timer) {
     
@@ -817,6 +852,7 @@ void BPM(int theValue) {
   bps = tmp / 60;
   float temp = bps * 2;
   bpmm = 1/temp*1000;
+  timer = millis();
   print(bpmm);
 }
 
@@ -922,12 +958,16 @@ void mouseClicked(){
     //check click on pause button
     pause.pauseCheck(mouseX, mouseY);
     
-    //check click on Mute Buttons
+    
+    //check click on Mute and Random Buttons
     for(int i = 0; i < 5; i++) {
       ButtonRec aMute = (ButtonRec) mute.get(i);
       aMute.muteCheck(mouseX, mouseY);
+      ButtonRec aRdm = (ButtonRec) random.get(i);
+      aRdm.mldyRandomCheck(mouseX, mouseY);
+      ButtonRec aSiCl = (ButtonRec) singleClear.get(i);
+      aSiCl.clearCheck(mouseX, mouseY);
     }
-
 }
 
 //Rec Class
@@ -980,6 +1020,7 @@ class ButtonRec {
   color c;
   boolean check;
   int val;
+  
   ButtonRec(int _x, int _y, int _w, int _h){
     x = _x;
     y = _y;
@@ -999,6 +1040,18 @@ class ButtonRec {
     check = false;
     val = v;
   }
+  
+  ButtonRec(int _x, int _y, int _w, int _h, color _c, int v) {
+    x = _x;
+    y = _y;
+    w = _w;
+    h = _h;
+    c = _c;
+    check = false;
+    val = v;
+  }
+  
+  
   void draw(){
     noStroke();
     fill(c);
@@ -1045,8 +1098,50 @@ class ButtonRec {
       snareAmpKnob.setValue(1);
       percAmpKnob.setValue(1);
       mldyAmpKnob.setValue(1);
+      
     }
     
+  }
+  
+  void clearCheck( int _x, int _y) {
+    if( _x > x && _y > y && _x < x+w && _y < y+h ){
+      if(val == 5) {
+          for(int i = 0; i < mldy.size(); i++){
+           Rec aMldy = (Rec) mldy.get(i);
+           aMldy.b = false;
+           aMldy.blink();
+      }
+    }
+    else if(val == 4) {
+          for(int i = 0; i < perc.size(); i++){
+           Rec aPerc = (Rec) perc.get(i);
+           aPerc.b = false;
+           aPerc.blink();
+      }
+    }
+    else if(val == 3) {
+          for(int i = 0; i < snare.size(); i++){
+           Rec aSnare = (Rec) snare.get(i);
+           aSnare.b = false;
+           aSnare.blink();
+      }
+    }
+    else if(val == 2) {
+          for(int i = 0; i < hiht.size(); i++){
+           Rec aHiht = (Rec) hiht.get(i);
+           aHiht.b = false;
+           aHiht.blink();
+      }
+    }
+    else {
+          for(int i = 0; i < rects.size(); i++){
+           Rec aRec = (Rec) rects.get(i);
+           aRec.b = false;
+           aRec.blink();
+      }
+    }
+    
+  }
   }
   
   void pauseCheck( int _x, int _y ){
@@ -1215,77 +1310,56 @@ class ButtonRec {
      }
    }
   }
-}
+  
+  void mldyRandomCheck(int _x, int _y) {
+    if( _x > x && _y > y && _x < x+w && _y < y+h ){
+      
+      if(val == 5) {
+        for(int i = 0; i < 16; i++) {
+          cp5.getController("M"+i).setValue(random(127));
+        }
+      }
+        
+      else if(val == 4) {
+        for(int i = 0; i < perc.size(); i++) {
+          Rec aPerc = (Rec) perc.get(i);
+          int tmp = Math.round(random(1));
+          if(tmp == 1) aPerc.b = true;
+          else aPerc.b = false;
+          aPerc.blink();
+        } 
+      }
+     else if(val == 3) {
+        for(int i = 0; i < snare.size(); i++) {
+          Rec aSnare = (Rec) snare.get(i);
+          int tmp = Math.round(random(1));
+          if(tmp == 1) aSnare.b = true;
+          else aSnare.b = false;
+          aSnare.blink();
+        }
+      }
+     else if(val == 2) {
+        for(int i = 0; i < hiht.size(); i++) {
+          Rec aHiht = (Rec) hiht.get(i);
+          int tmp = Math.round(random(1));
+          if(tmp == 1) aHiht.b = true;
+          else aHiht.b = false;
+          aHiht.blink();
+        }
+      }
+      
+     else {
+        for(int i = 0; i < rects.size(); i++) {
+          Rec aRec = (Rec) rects.get(i);
+          int tmp = Math.round(random(1));
+          if(tmp == 1) aRec.b = true;
+          else aRec.b = false;
+          aRec.blink();
+        }
+      }
+      
+      
+    }
+  }
 
-class Amp{
-  float amp;
-  color c;
-  int _x;
-  int _y;
-  int _w;
-  int _h;
-  
-  Amp(int w, int h, int x, int y){
-    amp = 1;
-    c = #bd93f9;
-    _x = x;
-    _y = y;
-    _w = w;
-    _h = h;
-  }
-  
-  void draw() {
-    noStroke();
-    fill(c);
-    rect(_x, _y, _w, _h);
-    up = new AmpControl(_x, _y+22, _w, _h/5, 0, #50fa7b);
-    down = new AmpControl(_x, _y-6, _w, _h/5, 1, #ff5555);
-    up.draw();
-    down.draw();
-    fill(#ffffff);
-    String ampformat = String.format("%.1f", amp);
-    text("VOL: " + ampformat, _x + _w/12, _y + _h/1.5);
-  }
-  
-  
-}
-
-class AmpControl{
-  color c;
-  int x;
-  int y;
-  int w;
-  int h;
-  int val;
-  
-  AmpControl(int _x, int _y, int _w, int _h, int v, color co) {
-    c = co;
-    x = _x;
-    y = _y;
-    w = _w;
-    h = _h;
-    val = v;
-  }
-  
-  void draw() {
-  noStroke();
-  fill(c);
-  rect(x, y, w, h);
-}
-
-  void AmpControlCheck( int _x, int _y ) {
-   if( _x > x && _y > y && _x < x+w && _y < y+h ){
-     
-     if(val == 1) {
-       amp.amp = amp.amp + 0.1;
-       amp.draw();
-     } else{
-       amp.amp = amp.amp - 0.1;
-       amp.draw();
-     }
-     
-   }
-  }
-  
-  
 }
