@@ -28,7 +28,7 @@ Start SonicPi and open up the file "sequencer.rb" and run it. Then open up and r
 
 ### Example Gif
 ![screenshot from the Programm](https://github.com/Brian-Farmer/sequencer/blob/master/media/jumbotune.gif?raw=true)
-### Click <a href="https://www.youtube.com/watch?v=-TS_Vf84kjM"><b>LINK</b></a> for Example Video 
+### Click <a href="https://youtu.be/p-vQrq_5DXk"><b>LINK</b></a> for Example Video 
 
 
 
