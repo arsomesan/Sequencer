@@ -4,6 +4,9 @@ import netP5.*;
 import controlP5.*;
 import javax.swing.ImageIcon;
 
+//loadJsonObject
+//loadJsonArray
+
 OscP5 oscP5;
 ControlP5 cp5;
 
@@ -105,13 +108,15 @@ ArrayList singleClearText;
 //initialize single Buttons
 ButtonRec clear;
 ButtonRec pause;
+ButtonRec save;
+ButtonRec load;
 
 PImage icon;
 float fps;
 
 PFont roboto;
 
-
+JSONArray data;
 void setup() {
   //Font
   roboto = loadFont("RobotoCondensed-Regular-48.vlw");
@@ -132,6 +137,9 @@ void setup() {
   pixelDensity(2);
   
   cp5 = new ControlP5(this);
+  
+  
+
   
   //cp5.setControlFont(font);
   
@@ -461,6 +469,10 @@ void setup() {
   //Pause Button
   pause = new ButtonRec(width - 370, height - 60, 100, 40);
   
+  save = new ButtonRec(width - 440, height - 60, 50, 40);
+  
+  load = new ButtonRec(width - 500, height - 60, 50, 40);
+  
   clear.c = #ff5555;
   pause.c = #ffb86c;
   
@@ -526,6 +538,8 @@ void draw() {
   //Draw Single BUttons
   clear.draw();
   pause.draw();
+  save.draw();
+  load.draw();
   
   //Draw Texts
   textSize(24);
@@ -542,7 +556,7 @@ void draw() {
   text("CLEAR", width - 240, height - 31);
   if(fontcount == 0) {
     fill(#6272a4);
-    text("BASE", 140, 70); 
+    text("KICK", 140, 70); 
     text("HIHAT", 140, 190); 
     text("SNARE", 140, 310); 
     text("PERCS", 140, 430);
@@ -958,6 +972,11 @@ void mouseClicked(){
     //check click on pause button
     pause.pauseCheck(mouseX, mouseY);
     
+    //check click on save button
+    save.saveCheck(mouseX, mouseY);
+    
+    //check click on load button
+    load.loadCheck(mouseX, mouseY);
     
     //check click on Mute and Random Buttons
     for(int i = 0; i < 5; i++) {
@@ -1057,6 +1076,182 @@ class ButtonRec {
     fill(c);
     rect(x,y,w,h);
     fill(#ffffff);
+  }
+  
+  void saveCheck(int _x, int _y) {
+   if( _x > x && _y > y && _x < x+w && _y < y+h ){
+     //Save
+     data = new JSONArray();
+     for (int i = 0; i < 16; i++) {
+        JSONObject patterns = new JSONObject();
+        
+        //Save Kick
+        int kickTmp = 0;
+        Rec aKick = (Rec) rects.get(i);
+        if(aKick.b == false) kickTmp = 0;
+        if(aKick.b == true) kickTmp = 1;
+        patterns.setInt("aKick"+i, kickTmp);
+
+        //Save Hiht
+        int hihtTmp = 0;
+        Rec aHiht = (Rec) hiht.get(i);
+        if(aHiht.b == false) hihtTmp = 0;
+        if(aHiht.b == true) hihtTmp = 1;
+        patterns.setInt("aHiht" + i, hihtTmp);
+        
+        //Save Snare
+        int snareTmp = 0;
+        Rec aSnare = (Rec) snare.get(i);
+        if(aSnare.b == false) snareTmp = 0;
+        if(aSnare.b == true) snareTmp = 1;
+        patterns.setInt("aSnare" + i, snareTmp);
+        
+        //Save Perc
+        int percTmp = 0;
+        Rec aPerc = (Rec) perc.get(i);
+        if(aPerc.b == false) percTmp = 0;
+        if(aPerc.b == true) percTmp = 1;
+        patterns.setInt("aPerc" + i, percTmp);
+        
+        //Save Melody
+        int mldyTmp = 0;
+        Rec aMldy = (Rec) mldy.get(i);
+        if(aMldy.b == false) mldyTmp = 0;
+        if(aMldy.b == true) mldyTmp = 1;
+        patterns.setInt("aMldy" + i, mldyTmp);
+        
+        //Save Melody Notes
+        patterns.setInt("aMldyNote"+i, m[i]);
+        data.setJSONObject(i, patterns);
+  }
+    JSONObject ampValues = new JSONObject();
+    ampValues.setFloat("Bamp", baseAmpValue);
+    ampValues.setFloat("Hamp", hihtAmpValue);
+    ampValues.setFloat("Samp", snareAmpValue);
+    ampValues.setFloat("Pamp", percAmpValue);
+    ampValues.setFloat("Mamp", mldyAmpValue);
+    data.setJSONObject(16, ampValues);
+    
+    JSONObject relValues = new JSONObject();
+    relValues.setFloat("Brel", baseReleaseValue);
+    relValues.setFloat("Hrel", hihtReleaseValue);
+    relValues.setFloat("Srel", snareReleaseValue);
+    relValues.setFloat("Prel", percReleaseValue);
+    relValues.setFloat("Mrel", mldyReleaseValue);
+    data.setJSONObject(17, relValues);
+    
+    JSONObject attValues = new JSONObject();
+    attValues.setFloat("Batt", baseAttackValue);
+    attValues.setFloat("Hatt", hihtAttackValue);
+    attValues.setFloat("Satt", snareAttackValue);
+    attValues.setFloat("Patt", percAttackValue);
+    attValues.setFloat("Matt", mldyAttackValue);
+    data.setJSONObject(18, attValues);
+    
+    JSONObject rateValues = new JSONObject();
+    rateValues.setFloat("Brate", baseRateValue);
+    rateValues.setFloat("Hrate", hihtRateValue);
+    rateValues.setFloat("Srate", snareRateValue);
+    rateValues.setFloat("Prate", percRateValue);
+    data.setJSONObject(19, rateValues);
+    
+    saveJSONArray(data, "data/new.json");
+   }
+  }
+  
+   void loadCheck(int _x, int _y) {
+   if( _x > x && _y > y && _x < x+w && _y < y+h ){
+      data = loadJSONArray("/data/new.json");
+      for(int i = 0; i < 16; i++) {
+        JSONObject patterns = data.getJSONObject(i);
+        //Load Kick pattern
+
+        Rec aKick = (Rec) rects.get(i);
+        if(patterns.getInt("aKick"+i) == 0) aKick.b = false;
+        else aKick.b = true;
+        aKick.blink();
+        
+        //Load Perc pattern
+        Rec aHiht = (Rec) hiht.get(i);
+        if(patterns.getInt("aHiht"+i) == 0) aHiht.b = false;
+        else aHiht.b = true;
+        aHiht.blink();
+        
+        //Load Snare pattern
+        Rec aSnare = (Rec) snare.get(i);
+        if(patterns.getInt("aSnare"+i) == 0) aSnare.b = false;
+        else aSnare.b = true;
+        aSnare.blink();
+        
+        //Load Perc pattern
+        Rec aPerc = (Rec) perc.get(i);
+        if(patterns.getInt("aPerc"+i) == 0) aPerc.b = false;
+        else aPerc.b = true;
+        aPerc.blink();
+        
+        //Load Mldy pattern
+        Rec aMldy = (Rec) mldy.get(i);
+        if(patterns.getInt("aMldy"+i) == 0) aMldy.b = false;
+        else aMldy.b = true;
+        aMldy.blink();
+        
+        //Load Mldy Notes 
+        m[i] = patterns.getInt("aMldyNote" + i);
+        cp5.getController("M"+i).setValue(m[i]);
+        
+        
+        
+      }
+        //Load Amp Values
+        JSONObject ampValues = data.getJSONObject(16);
+        baseAmpValue = ampValues.getFloat("Bamp");
+        baseAmpKnob.setValue(baseAmpValue);
+        hihtAmpValue = ampValues.getFloat("Hamp");
+        hihtAmpKnob.setValue(hihtAmpValue);
+        snareAmpValue = ampValues.getFloat("Samp");
+        snareAmpKnob.setValue(snareAmpValue);
+        percAmpValue = ampValues.getFloat("Pamp");
+        percAmpKnob.setValue(percAmpValue);
+        mldyAmpValue = ampValues.getFloat("Mamp");
+        mldyAmpKnob.setValue(mldyAmpValue);
+        
+        //Load Release Values
+        JSONObject relValues = data.getJSONObject(17);
+        baseReleaseValue = relValues.getFloat("Brel");
+        baseReleaseKnob.setValue(baseReleaseValue);
+        hihtReleaseValue = relValues.getFloat("Hrel");
+        hihtReleaseKnob.setValue(hihtReleaseValue);
+        snareReleaseValue = relValues.getFloat("Srel");
+        snareReleaseKnob.setValue(snareReleaseValue);
+        percReleaseValue = relValues.getFloat("Prel");
+        percReleaseKnob.setValue(percReleaseValue);
+        mldyReleaseValue = relValues.getFloat("Mrel");
+        mldyReleaseKnob.setValue(mldyReleaseValue);
+        
+        //Load Attack Values
+        JSONObject attValues = data.getJSONObject(18);
+        baseAttackValue = attValues.getFloat("Batt");
+        baseAttackKnob.setValue(baseAttackValue);
+        hihtAttackValue = attValues.getFloat("Hatt");
+        hihtAttackKnob.setValue(hihtAttackValue);
+        snareAttackValue = attValues.getFloat("Satt");
+        snareAttackKnob.setValue(snareAttackValue);
+        percAttackValue = attValues.getFloat("Patt");
+        percAttackKnob.setValue(percAttackValue);
+        mldyAttackValue = attValues.getFloat("Matt");
+        mldyAttackKnob.setValue(mldyAttackValue);
+        
+        //Load Rate Values
+        JSONObject rateValues = data.getJSONObject(19);
+        baseRateValue = rateValues.getFloat("Brate");
+        baseRateKnob.setValue(baseRateValue);
+        hihtRateValue = rateValues.getFloat("Hrate");
+        hihtRateKnob.setValue(hihtRateValue);
+        snareRateValue = rateValues.getFloat("Srate");
+        snareRateKnob.setValue(snareRateValue);
+        percRateValue = rateValues.getFloat("Prate");
+        percRateKnob.setValue(percRateValue);
+   }
   }
     
   void clickCheck( int _x, int _y ){
