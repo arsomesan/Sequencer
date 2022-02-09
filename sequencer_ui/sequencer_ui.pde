@@ -113,6 +113,8 @@ ButtonRec load;
 
 PImage icon;
 float fps;
+PImage loadIcon;
+PImage saveIcon;
 
 PFont roboto;
 
@@ -129,7 +131,13 @@ void setup() {
   //frame.setIconImage(barIcon.getImage());
   //frame.setTitle("JUMBOTUNE");
   surface.setIcon(icon);
+  //Program Title
   surface.setTitle("JUMBOTUNE");
+  
+  //Save Icon
+  saveIcon = loadImage("file-down.png");
+  //Load Icon
+  loadIcon = loadImage("file-up.png");
   
   background(#282a36);
   size(1400,900);
@@ -472,10 +480,12 @@ void setup() {
   
   save = new ButtonRec(width - 440, height - 60, 50, 40);
   
-  load = new ButtonRec(width - 500, height - 60, 50, 40);
+  load = new ButtonRec(width - 510, height - 60, 50, 40);
   
   clear.c = #ff5555;
   pause.c = #ffb86c;
+  save.c = #ff79c6;
+  load.c = #ff79c6;
   
   //Add all Recs to RecLists
   int pos = 30;
@@ -536,11 +546,18 @@ void draw() {
   textSize(13);
   fill(#6272a4);
   text("JUMBOTUNE by Adrian Somesan", (width/2) -80, height - 15); 
-  //Draw Single BUttons
+  
+  //Draw Single Buttons
   clear.draw();
   pause.draw();
   save.draw();
   load.draw();
+  
+  //Draw Save Icon
+  saveIcon.resize(20,25);
+  loadIcon.resize(20,25);
+  image(saveIcon, width - 425, height - 52);
+  image(loadIcon, width - 495, height - 52);
   
   //Draw Texts
   textSize(24);
