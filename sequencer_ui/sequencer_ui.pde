@@ -427,6 +427,7 @@ void setup() {
     
     //SlicerWave
     slicerWave = cp5.addRadioButton("Wave")
+              .setValue(0)
               .setPosition(width - 360,620)
               .setSize(20,20)
               .setColorForeground(#50fa7b)
@@ -1155,6 +1156,14 @@ class ButtonRec {
     rateValues.setFloat("Prate", percRateValue);
     data.setJSONObject(19, rateValues);
     
+    JSONObject waveValue = new JSONObject();
+    waveValue.setInt("Wave", slicerWaveValue);
+    data.setJSONObject(20, waveValue);
+    
+    JSONObject bpmValue = new JSONObject();
+    bpmValue.setFloat("Bpm", _bpm);
+    data.setJSONObject(21, bpmValue);
+    
     saveJSONArray(data, "data/new.json");
    }
   }
@@ -1251,6 +1260,19 @@ class ButtonRec {
         snareRateKnob.setValue(snareRateValue);
         percRateValue = rateValues.getFloat("Prate");
         percRateKnob.setValue(percRateValue);
+        
+        //Load Slicer Wave Value
+        JSONObject waveValue = data.getJSONObject(20);
+        slicerWaveValue = waveValue.getInt("Wave");
+        slicerWave.setValue(slicerWaveValue);
+        
+        JSONObject bpmValue = data.getJSONObject(21);
+        _bpm = bpmValue.getFloat("Bpm");
+        bps = _bpm/60;
+        float temp = bps*2;
+        bpmm = 1/temp*1000;
+        cp5.getController("BPM").setValue(_bpm);
+        timer = millis();
    }
   }
     
