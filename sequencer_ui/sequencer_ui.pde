@@ -553,7 +553,7 @@ void draw() {
   save.draw();
   load.draw();
   
-  //Draw Save Icon
+  //Draw Save & Load Icon
   saveIcon.resize(20,25);
   loadIcon.resize(20,25);
   image(saveIcon, width - 425, height - 52);
@@ -1564,14 +1564,25 @@ class ButtonRec {
     if( _x > x && _y > y && _x < x+w && _y < y+h ){
       
       if(val == 5) {
-        for(int i = 0; i < 16; i++) {
-          cp5.getController("M"+i).setValue(random(127));
+        int ladder = Math.round(random(11)); 
+        for(int i = 0; i < 16; i++) { 
+          int val = ladderCheck(ladder, Math.round(random(11)));
+          
+          
+          
+          print("Note:" + val + "\n");
+          cp5.getController("M"+i).setValue(val);
+          
+          
+          
+          
           Rec aMldy = (Rec) mldy.get(i);
           int tmp = Math.round(random(1));
           if(tmp == 1) aMldy.b = true;
           else aMldy.b = false;
           aMldy.blink();
         }
+        print(ladder + "\n");
       }
         
       else if(val == 4) {
@@ -1617,3 +1628,14 @@ class ButtonRec {
   }
 
 }
+
+  int ladderCheck(int ladder, int val) {
+    int ergeb;
+    int math = val * 12;
+    ergeb = math + ladder;
+    if(ergeb > 127){
+      print("this too high: " + ergeb + "\n");
+      return ladderCheck(ladder, --val);
+    }
+    else return ergeb;
+  }
