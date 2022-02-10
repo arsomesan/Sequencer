@@ -1567,18 +1567,11 @@ class ButtonRec {
         int ladder = Math.round(random(11)); 
         for(int i = 0; i < 16; i++) { 
           int val = ladderCheck(ladder, Math.round(random(11)));
-          
-          
-          
           print("Note:" + val + "\n");
           cp5.getController("M"+i).setValue(val);
-          
-          
-          
-          
           Rec aMldy = (Rec) mldy.get(i);
           int tmp = Math.round(random(1));
-          if(tmp == 1) aMldy.b = true;
+          if( val < 90 && val > 35) aMldy.b = true;
           else aMldy.b = false;
           aMldy.blink();
         }
@@ -1595,30 +1588,62 @@ class ButtonRec {
         } 
       }
      else if(val == 3) {
+       int count = 0;
+       int smallcount = 0;
+       boolean last = false;
         for(int i = 0; i < snare.size(); i++) {
           Rec aSnare = (Rec) snare.get(i);
           int tmp = Math.round(random(1));
-          if(tmp == 1) aSnare.b = true;
-          else aSnare.b = false;
+          if(tmp == 1 && last == false && count < 4) {
+            aSnare.b = true;
+            count++;
+            last = true;
+          }
+          else {
+            aSnare.b = false;
+            if (smallcount >= 3) {
+              smallcount = 0;
+              last = false;
+            }
+            smallcount++;
+          }
           aSnare.blink();
         }
       }
      else if(val == 2) {
+       int count = 0;
+       boolean last = true;
         for(int i = 0; i < hiht.size(); i++) {
           Rec aHiht = (Rec) hiht.get(i);
           int tmp = Math.round(random(1));
-          if(tmp == 1) aHiht.b = true;
-          else aHiht.b = false;
+          if(tmp == 1 && count < 8 && last == false) {
+            aHiht.b = true;
+            count++;
+            last = true;
+          }
+          else {
+            aHiht.b = false;
+            last = false;
+          }
           aHiht.blink();
         }
       }
       
      else {
+       int count = 0;
+       boolean last = false;
         for(int i = 0; i < rects.size(); i++) {
           Rec aRec = (Rec) rects.get(i);
           int tmp = Math.round(random(1));
-          if(tmp == 1) aRec.b = true;
-          else aRec.b = false;
+          if(tmp == 1 && count < 8 && last == false) {
+            aRec.b = true;
+            count ++;
+            last = true;
+          }
+          else {
+            aRec.b = false;
+            last = false;
+          }
           aRec.blink();
         }
       }
