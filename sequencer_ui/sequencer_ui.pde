@@ -4,6 +4,9 @@ import netP5.*;
 import controlP5.*;
 import javax.swing.ImageIcon;
 
+//loadJsonObject
+//loadJsonArray
+
 OscP5 oscP5;
 ControlP5 cp5;
 
@@ -105,13 +108,17 @@ ArrayList singleClearText;
 //initialize single Buttons
 ButtonRec clear;
 ButtonRec pause;
+ButtonRec save;
+ButtonRec load;
 
 PImage icon;
 float fps;
+PImage loadIcon;
+PImage saveIcon;
 
 PFont roboto;
 
-
+JSONArray data;
 void setup() {
   //Font
   roboto = loadFont("RobotoCondensed-Regular-48.vlw");
@@ -124,7 +131,13 @@ void setup() {
   //frame.setIconImage(barIcon.getImage());
   //frame.setTitle("JUMBOTUNE");
   surface.setIcon(icon);
+  //Program Title
   surface.setTitle("JUMBOTUNE");
+  
+  //Save Icon
+  saveIcon = loadImage("file-down.png");
+  //Load Icon
+  loadIcon = loadImage("file-up.png");
   
   background(#282a36);
   size(1400,900);
@@ -132,6 +145,9 @@ void setup() {
   pixelDensity(2);
   
   cp5 = new ControlP5(this);
+  
+  
+
   
   //cp5.setControlFont(font);
   
@@ -419,6 +435,7 @@ void setup() {
     
     //SlicerWave
     slicerWave = cp5.addRadioButton("Wave")
+              .setValue(0)
               .setPosition(width - 360,620)
               .setSize(20,20)
               .setColorForeground(#50fa7b)
@@ -461,8 +478,14 @@ void setup() {
   //Pause Button
   pause = new ButtonRec(width - 370, height - 60, 100, 40);
   
+  save = new ButtonRec(width - 440, height - 60, 50, 40);
+  
+  load = new ButtonRec(width - 510, height - 60, 50, 40);
+  
   clear.c = #ff5555;
   pause.c = #ffb86c;
+  save.c = #ff79c6;
+  load.c = #ff79c6;
   
   //Add all Recs to RecLists
   int pos = 30;
@@ -523,9 +546,18 @@ void draw() {
   textSize(13);
   fill(#6272a4);
   text("JUMBOTUNE by Adrian Somesan", (width/2) -80, height - 15); 
-  //Draw Single BUttons
+  
+  //Draw Single Buttons
   clear.draw();
   pause.draw();
+  save.draw();
+  load.draw();
+  
+  //Draw Save & Load Icon
+  saveIcon.resize(20,25);
+  loadIcon.resize(20,25);
+  image(saveIcon, width - 425, height - 52);
+  image(loadIcon, width - 495, height - 52);
   
   //Draw Texts
   textSize(24);
@@ -542,7 +574,7 @@ void draw() {
   text("CLEAR", width - 240, height - 31);
   if(fontcount == 0) {
     fill(#6272a4);
-    text("BASE", 140, 70); 
+    text("KICK", 140, 70); 
     text("HIHAT", 140, 190); 
     text("SNARE", 140, 310); 
     text("PERCS", 140, 430);
@@ -958,6 +990,11 @@ void mouseClicked(){
     //check click on pause button
     pause.pauseCheck(mouseX, mouseY);
     
+    //check click on save button
+    save.saveCheck(mouseX, mouseY);
+    
+    //check click on load button
+    load.loadCheck(mouseX, mouseY);
     
     //check click on Mute and Random Buttons
     for(int i = 0; i < 5; i++) {
@@ -1057,6 +1094,203 @@ class ButtonRec {
     fill(c);
     rect(x,y,w,h);
     fill(#ffffff);
+  }
+  
+  void saveCheck(int _x, int _y) {
+   if( _x > x && _y > y && _x < x+w && _y < y+h ){
+     //Save
+     data = new JSONArray();
+     for (int i = 0; i < 16; i++) {
+        JSONObject patterns = new JSONObject();
+        
+        //Save Kick
+        int kickTmp = 0;
+        Rec aKick = (Rec) rects.get(i);
+        if(aKick.b == false) kickTmp = 0;
+        if(aKick.b == true) kickTmp = 1;
+        patterns.setInt("aKick"+i, kickTmp);
+
+        //Save Hiht
+        int hihtTmp = 0;
+        Rec aHiht = (Rec) hiht.get(i);
+        if(aHiht.b == false) hihtTmp = 0;
+        if(aHiht.b == true) hihtTmp = 1;
+        patterns.setInt("aHiht" + i, hihtTmp);
+        
+        //Save Snare
+        int snareTmp = 0;
+        Rec aSnare = (Rec) snare.get(i);
+        if(aSnare.b == false) snareTmp = 0;
+        if(aSnare.b == true) snareTmp = 1;
+        patterns.setInt("aSnare" + i, snareTmp);
+        
+        //Save Perc
+        int percTmp = 0;
+        Rec aPerc = (Rec) perc.get(i);
+        if(aPerc.b == false) percTmp = 0;
+        if(aPerc.b == true) percTmp = 1;
+        patterns.setInt("aPerc" + i, percTmp);
+        
+        //Save Melody
+        int mldyTmp = 0;
+        Rec aMldy = (Rec) mldy.get(i);
+        if(aMldy.b == false) mldyTmp = 0;
+        if(aMldy.b == true) mldyTmp = 1;
+        patterns.setInt("aMldy" + i, mldyTmp);
+        
+        //Save Melody Notes
+        patterns.setInt("aMldyNote"+i, m[i]);
+        data.setJSONObject(i, patterns);
+  }
+    JSONObject ampValues = new JSONObject();
+    ampValues.setFloat("Bamp", baseAmpValue);
+    ampValues.setFloat("Hamp", hihtAmpValue);
+    ampValues.setFloat("Samp", snareAmpValue);
+    ampValues.setFloat("Pamp", percAmpValue);
+    ampValues.setFloat("Mamp", mldyAmpValue);
+    data.setJSONObject(16, ampValues);
+    
+    JSONObject relValues = new JSONObject();
+    relValues.setFloat("Brel", baseReleaseValue);
+    relValues.setFloat("Hrel", hihtReleaseValue);
+    relValues.setFloat("Srel", snareReleaseValue);
+    relValues.setFloat("Prel", percReleaseValue);
+    relValues.setFloat("Mrel", mldyReleaseValue);
+    data.setJSONObject(17, relValues);
+    
+    JSONObject attValues = new JSONObject();
+    attValues.setFloat("Batt", baseAttackValue);
+    attValues.setFloat("Hatt", hihtAttackValue);
+    attValues.setFloat("Satt", snareAttackValue);
+    attValues.setFloat("Patt", percAttackValue);
+    attValues.setFloat("Matt", mldyAttackValue);
+    data.setJSONObject(18, attValues);
+    
+    JSONObject rateValues = new JSONObject();
+    rateValues.setFloat("Brate", baseRateValue);
+    rateValues.setFloat("Hrate", hihtRateValue);
+    rateValues.setFloat("Srate", snareRateValue);
+    rateValues.setFloat("Prate", percRateValue);
+    data.setJSONObject(19, rateValues);
+    
+    JSONObject waveValue = new JSONObject();
+    waveValue.setInt("Wave", slicerWaveValue);
+    data.setJSONObject(20, waveValue);
+    
+    JSONObject bpmValue = new JSONObject();
+    bpmValue.setFloat("Bpm", _bpm);
+    data.setJSONObject(21, bpmValue);
+    
+    saveJSONArray(data, "data/new.json");
+   }
+  }
+  
+   void loadCheck(int _x, int _y) {
+   if( _x > x && _y > y && _x < x+w && _y < y+h ){
+      data = loadJSONArray("/data/new.json");
+      for(int i = 0; i < 16; i++) {
+        JSONObject patterns = data.getJSONObject(i);
+        //Load Kick pattern
+
+        Rec aKick = (Rec) rects.get(i);
+        if(patterns.getInt("aKick"+i) == 0) aKick.b = false;
+        else aKick.b = true;
+        aKick.blink();
+        
+        //Load Perc pattern
+        Rec aHiht = (Rec) hiht.get(i);
+        if(patterns.getInt("aHiht"+i) == 0) aHiht.b = false;
+        else aHiht.b = true;
+        aHiht.blink();
+        
+        //Load Snare pattern
+        Rec aSnare = (Rec) snare.get(i);
+        if(patterns.getInt("aSnare"+i) == 0) aSnare.b = false;
+        else aSnare.b = true;
+        aSnare.blink();
+        
+        //Load Perc pattern
+        Rec aPerc = (Rec) perc.get(i);
+        if(patterns.getInt("aPerc"+i) == 0) aPerc.b = false;
+        else aPerc.b = true;
+        aPerc.blink();
+        
+        //Load Mldy pattern
+        Rec aMldy = (Rec) mldy.get(i);
+        if(patterns.getInt("aMldy"+i) == 0) aMldy.b = false;
+        else aMldy.b = true;
+        aMldy.blink();
+        
+        //Load Mldy Notes 
+        m[i] = patterns.getInt("aMldyNote" + i);
+        cp5.getController("M"+i).setValue(m[i]);
+        
+        
+        
+      }
+        //Load Amp Values
+        JSONObject ampValues = data.getJSONObject(16);
+        baseAmpValue = ampValues.getFloat("Bamp");
+        baseAmpKnob.setValue(baseAmpValue);
+        hihtAmpValue = ampValues.getFloat("Hamp");
+        hihtAmpKnob.setValue(hihtAmpValue);
+        snareAmpValue = ampValues.getFloat("Samp");
+        snareAmpKnob.setValue(snareAmpValue);
+        percAmpValue = ampValues.getFloat("Pamp");
+        percAmpKnob.setValue(percAmpValue);
+        mldyAmpValue = ampValues.getFloat("Mamp");
+        mldyAmpKnob.setValue(mldyAmpValue);
+        
+        //Load Release Values
+        JSONObject relValues = data.getJSONObject(17);
+        baseReleaseValue = relValues.getFloat("Brel");
+        baseReleaseKnob.setValue(baseReleaseValue);
+        hihtReleaseValue = relValues.getFloat("Hrel");
+        hihtReleaseKnob.setValue(hihtReleaseValue);
+        snareReleaseValue = relValues.getFloat("Srel");
+        snareReleaseKnob.setValue(snareReleaseValue);
+        percReleaseValue = relValues.getFloat("Prel");
+        percReleaseKnob.setValue(percReleaseValue);
+        mldyReleaseValue = relValues.getFloat("Mrel");
+        mldyReleaseKnob.setValue(mldyReleaseValue);
+        
+        //Load Attack Values
+        JSONObject attValues = data.getJSONObject(18);
+        baseAttackValue = attValues.getFloat("Batt");
+        baseAttackKnob.setValue(baseAttackValue);
+        hihtAttackValue = attValues.getFloat("Hatt");
+        hihtAttackKnob.setValue(hihtAttackValue);
+        snareAttackValue = attValues.getFloat("Satt");
+        snareAttackKnob.setValue(snareAttackValue);
+        percAttackValue = attValues.getFloat("Patt");
+        percAttackKnob.setValue(percAttackValue);
+        mldyAttackValue = attValues.getFloat("Matt");
+        mldyAttackKnob.setValue(mldyAttackValue);
+        
+        //Load Rate Values
+        JSONObject rateValues = data.getJSONObject(19);
+        baseRateValue = rateValues.getFloat("Brate");
+        baseRateKnob.setValue(baseRateValue);
+        hihtRateValue = rateValues.getFloat("Hrate");
+        hihtRateKnob.setValue(hihtRateValue);
+        snareRateValue = rateValues.getFloat("Srate");
+        snareRateKnob.setValue(snareRateValue);
+        percRateValue = rateValues.getFloat("Prate");
+        percRateKnob.setValue(percRateValue);
+        
+        //Load Slicer Wave Value
+        JSONObject waveValue = data.getJSONObject(20);
+        slicerWaveValue = waveValue.getInt("Wave");
+        slicerWave.setValue(slicerWaveValue);
+        
+        JSONObject bpmValue = data.getJSONObject(21);
+        _bpm = bpmValue.getFloat("Bpm");
+        bps = _bpm/60;
+        float temp = bps*2;
+        bpmm = 1/temp*1000;
+        cp5.getController("BPM").setValue(_bpm);
+        timer = millis();
+   }
   }
     
   void clickCheck( int _x, int _y ){
@@ -1330,14 +1564,18 @@ class ButtonRec {
     if( _x > x && _y > y && _x < x+w && _y < y+h ){
       
       if(val == 5) {
-        for(int i = 0; i < 16; i++) {
-          cp5.getController("M"+i).setValue(random(127));
+        int ladder = Math.round(random(11)); 
+        for(int i = 0; i < 16; i++) { 
+          int val = ladderCheck(ladder, Math.round(random(11)));
+          print("Note:" + val + "\n");
+          cp5.getController("M"+i).setValue(val);
           Rec aMldy = (Rec) mldy.get(i);
           int tmp = Math.round(random(1));
-          if(tmp == 1) aMldy.b = true;
+          if( val < 90 && val > 35) aMldy.b = true;
           else aMldy.b = false;
           aMldy.blink();
         }
+        print(ladder + "\n");
       }
         
       else if(val == 4) {
@@ -1350,30 +1588,62 @@ class ButtonRec {
         } 
       }
      else if(val == 3) {
+       int count = 0;
+       int smallcount = 0;
+       boolean last = false;
         for(int i = 0; i < snare.size(); i++) {
           Rec aSnare = (Rec) snare.get(i);
           int tmp = Math.round(random(1));
-          if(tmp == 1) aSnare.b = true;
-          else aSnare.b = false;
+          if(tmp == 1 && last == false && count < 4) {
+            aSnare.b = true;
+            count++;
+            last = true;
+          }
+          else {
+            aSnare.b = false;
+            if (smallcount >= 3) {
+              smallcount = 0;
+              last = false;
+            }
+            smallcount++;
+          }
           aSnare.blink();
         }
       }
      else if(val == 2) {
+       int count = 0;
+       boolean last = true;
         for(int i = 0; i < hiht.size(); i++) {
           Rec aHiht = (Rec) hiht.get(i);
           int tmp = Math.round(random(1));
-          if(tmp == 1) aHiht.b = true;
-          else aHiht.b = false;
+          if(tmp == 1 && count < 8 && last == false) {
+            aHiht.b = true;
+            count++;
+            last = true;
+          }
+          else {
+            aHiht.b = false;
+            last = false;
+          }
           aHiht.blink();
         }
       }
       
      else {
+       int count = 0;
+       boolean last = false;
         for(int i = 0; i < rects.size(); i++) {
           Rec aRec = (Rec) rects.get(i);
           int tmp = Math.round(random(1));
-          if(tmp == 1) aRec.b = true;
-          else aRec.b = false;
+          if(tmp == 1 && count < 8 && last == false) {
+            aRec.b = true;
+            count ++;
+            last = true;
+          }
+          else {
+            aRec.b = false;
+            last = false;
+          }
           aRec.blink();
         }
       }
@@ -1383,3 +1653,14 @@ class ButtonRec {
   }
 
 }
+
+  int ladderCheck(int ladder, int val) {
+    int ergeb;
+    int math = val * 12;
+    ergeb = math + ladder;
+    if(ergeb > 127){
+      print("this too high: " + ergeb + "\n");
+      return ladderCheck(ladder, --val);
+    }
+    else return ergeb;
+  }

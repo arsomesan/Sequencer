@@ -110,6 +110,7 @@ live_loop :_melody do
   bamp = get(:globalAmp)
   mbool = get(:mldyBool)
   with_fx :slicer, phase: 0.25, wave: get(:slicerwave), mix: get(:slicerbool) do
+    use_synth :piano
     play get(:tune), amp: (get(:globalAmp) * get(:mamp)) * mbool, attack: get(:mattk), decay: get(:mrel)
     sleep get(:globalBpm)
   end
