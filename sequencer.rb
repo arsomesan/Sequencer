@@ -5,6 +5,7 @@ live_loop :getbpm do
   use_real_time
   bpm = sync "/osc*/bpm"
   set :globalBpm, bpm[0]
+  set :synth, 1
   print(get(:globalBpm))
 end
 
@@ -122,9 +123,18 @@ live_loop :_melody do
   use_real_time
   bamp = get(:globalAmp)
   mbool = get(:mldyBool1)
+  synth = get(:synth)
   with_fx :slicer, phase: 0.25, wave: get(:slicerwave), mix: get(:slicerbool) do
     if (mbool == 1)
-      use_synth :piano
+      if (synth == 0)
+        use_synth :piano
+      end
+      if (synth == 1)
+        use_synth :prophet
+      end
+      if (synth == 2)
+        use_synth :dark_ambience
+      end
       play get(:tune), amp: (get(:globalAmp) * get(:mamp)) * mbool, attack: get(:mattk), decay: get(:mrel)
       sleep get(:globalBpm) * 2
     else
@@ -138,9 +148,18 @@ live_loop :_melody2 do
   use_real_time
   bamp = get(:globalAmp)
   mbool = get(:mldyBool2)
+  synth = get(:synth)
   with_fx :slicer, phase: 0.25, wave: get(:slicerwave), mix: get(:slicerbool) do
     if (mbool == 1)
-      use_synth :piano
+      if (synth == 0)
+        use_synth :piano
+      end
+      if (synth == 1)
+        use_synth :prophet
+      end
+      if (synth == 2)
+        use_synth :dark_ambience
+      end
       play get(:tune), amp: (get(:globalAmp) * get(:mamp)) * mbool, attack: get(:mattk), decay: get(:mrel)
       sleep get(:globalBpm) * 2
     else
@@ -153,9 +172,18 @@ live_loop :_melody3 do
   use_real_time
   bamp = get(:globalAmp)
   mbool = get(:mldyBool3)
+  synth = get(:synth)
   with_fx :slicer, phase: 0.25, wave: get(:slicerwave), mix: get(:slicerbool) do
     if (mbool == 1)
-      use_synth :piano
+      if (synth == 0)
+        use_synth :piano
+      end
+      if (synth == 1)
+        use_synth :prophet
+      end
+      if (synth == 2)
+        use_synth :dark_ambience
+      end
       play get(:tune), amp: (get(:globalAmp) * get(:mamp)) * mbool, attack: get(:mattk), decay: get(:mrel)
       sleep get(:globalBpm) * 2
     else
@@ -168,9 +196,18 @@ live_loop :_melody4 do
   use_real_time
   bamp = get(:globalAmp)
   mbool = get(:mldyBool4)
+  synth = get(:synth)
   with_fx :slicer, phase: 0.25, wave: get(:slicerwave), mix: get(:slicerbool) do
     if (mbool == 1)
-      use_synth :piano
+      if (synth == 0)
+        use_synth :piano
+      end
+      if (synth == 1)
+        use_synth :prophet
+      end
+      if (synth == 2)
+        use_synth :dark_ambience
+      end
       play get(:tune), amp: (get(:globalAmp) * get(:mamp)) * mbool, attack: get(:mattk), decay: get(:mrel)
       sleep get(:globalBpm) * 2
     else
@@ -183,9 +220,18 @@ live_loop :_melody5 do
   use_real_time
   bamp = get(:globalAmp)
   mbool = get(:mldyBool5)
+  synth = get(:synth)
   with_fx :slicer, phase: 0.25, wave: get(:slicerwave), mix: get(:slicerbool) do
     if (mbool == 1)
-      use_synth :piano
+      if (synth == 0)
+        use_synth :piano
+      end
+      if (synth == 1)
+        use_synth :prophet
+      end
+      if (synth == 2)
+        use_synth :dark_ambience
+      end
       play get(:tune), amp: (get(:globalAmp) * get(:mamp)) * mbool, attack: get(:mattk), decay: get(:mrel)
       sleep get(:globalBpm) * 2
     else
@@ -199,9 +245,18 @@ live_loop :_melody6 do
   use_real_time
   bamp = get(:globalAmp)
   mbool = get(:mldyBool6)
+  synth = get(:synth)
   with_fx :slicer, phase: 0.25, wave: get(:slicerwave), mix: get(:slicerbool) do
     if (mbool == 1)
-      use_synth :piano
+      if (synth == 0)
+        use_synth :piano
+      end
+      if (synth == 1)
+        use_synth :prophet
+      end
+      if (synth == 2)
+        use_synth :dark_ambience
+      end
       play get(:tune), amp: (get(:globalAmp) * get(:mamp)) * mbool, attack: get(:mattk), decay: get(:mrel)
       sleep get(:globalBpm) * 2
     else
@@ -214,9 +269,18 @@ live_loop :_melody7 do
   use_real_time
   bamp = get(:globalAmp)
   mbool = get(:mldyBool7)
+  synth = get(:synth)
   with_fx :slicer, phase: 0.25, wave: get(:slicerwave), mix: get(:slicerbool) do
     if (mbool == 1)
-      use_synth :piano
+      if (synth == 0)
+        use_synth :piano
+      end
+      if (synth == 1)
+        use_synth :prophet
+      end
+      if (synth == 2)
+        use_synth :dark_ambience
+      end
       play get(:tune), amp: (get(:globalAmp) * get(:mamp)) * mbool, attack: get(:mattk), decay: get(:mrel)
       sleep get(:globalBpm) * 2
     else
@@ -229,9 +293,18 @@ live_loop :_melody8 do
   use_real_time
   bamp = get(:globalAmp)
   mbool = get(:mldyBool8)
+  synth = get(:synth)
   with_fx :slicer, phase: 0.25, wave: get(:slicerwave), mix: get(:slicerbool) do
     if (mbool == 1)
-      use_synth :piano
+      if (synth == 0)
+        use_synth :piano
+      end
+      if (synth == 1)
+        use_synth :prophet
+      end
+      if (synth == 2)
+        use_synth :dark_ambience
+      end
       play get(:tune), amp: (get(:globalAmp) * get(:mamp)) * mbool, attack: get(:mattk), decay: get(:mrel)
       sleep get(:globalBpm) * 2
     else
