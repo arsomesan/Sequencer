@@ -736,7 +736,6 @@ void draw() {
         mldyTimeMessage.add(0);
         mldyTimeMessage.add(0);
         last++;
-        print(1+"\n");
       } else if(aMldy.b && aMldy.mute != true && last == 1) {
         mldyTimeMessage.add(0);
         mldyTimeMessage.add(1);
@@ -745,10 +744,8 @@ void draw() {
         mldyTimeMessage.add(0);
         mldyTimeMessage.add(0);
         mldyTimeMessage.add(0);
-        mldyTimeMessage.add(0);
-                        
+        mldyTimeMessage.add(0);              
         last++;
-        print(2+"\n");
       } else if(aMldy.b && aMldy.mute != true && last == 2) {
         mldyTimeMessage.add(0);
         mldyTimeMessage.add(0);
@@ -759,7 +756,6 @@ void draw() {
         mldyTimeMessage.add(0);
         mldyTimeMessage.add(0);
         last++;
-        print(3+"\n");
       } else if(aMldy.b && aMldy.mute != true && last == 3) {
         mldyTimeMessage.add(0);
         mldyTimeMessage.add(0);
@@ -770,7 +766,6 @@ void draw() {
         mldyTimeMessage.add(0);
         mldyTimeMessage.add(0);
         last++;
-        print(4+"\n");
       } else if(aMldy.b && aMldy.mute != true && last == 4) {
         mldyTimeMessage.add(0);
         mldyTimeMessage.add(0);
@@ -781,7 +776,6 @@ void draw() {
         mldyTimeMessage.add(0);
         mldyTimeMessage.add(0);
         last++;
-        print(5+"\n");
       } else if(aMldy.b && aMldy.mute != true && last == 5) {
         mldyTimeMessage.add(0);
         mldyTimeMessage.add(0);
@@ -792,7 +786,6 @@ void draw() {
         mldyTimeMessage.add(0);
         mldyTimeMessage.add(0);
         last++;
-        print(6+"\n");
       } else if(aMldy.b && aMldy.mute != true && last == 6) {
         mldyTimeMessage.add(0);
         mldyTimeMessage.add(0);
@@ -803,7 +796,6 @@ void draw() {
         mldyTimeMessage.add(1);
         mldyTimeMessage.add(0);
         last++;
-        print(7+"\n");
       } else if(aMldy.b && aMldy.mute != true && last == 7) {
         mldyTimeMessage.add(0);
         mldyTimeMessage.add(0);
@@ -814,9 +806,7 @@ void draw() {
         mldyTimeMessage.add(0);
         mldyTimeMessage.add(1);
         last = 0;
-        print(8+"\n");
       } else {
-        print("nix\n");
         mldyTimeMessage.add(0);
         mldyTimeMessage.add(0);
         mldyTimeMessage.add(0);
@@ -1019,13 +1009,11 @@ void MRel(float theValue) {
 
 void BPM(int theValue) { 
   float tmp = theValue;
-  print(tmp + "\n");
   _bpm = tmp;
   bps = tmp / 60;
   float temp = bps * 2;
   bpmm = 1/temp*1000;
   timer = millis();
-  print(bpmm);
 }
 
 void M0(int theValue) {
@@ -1731,15 +1719,12 @@ class ButtonRec {
         int ladder = Math.round(random(11)); 
         for(int i = 0; i < 16; i++) { 
           int val = ladderCheck(ladder, Math.round(random(11)));
-          print("Note:" + val + "\n");
           cp5.getController("M"+i).setValue(val);
           Rec aMldy = (Rec) mldy.get(i);
-          int tmp = Math.round(random(1));
           if( val < 90 && val > 35) aMldy.b = true;
           else aMldy.b = false;
           aMldy.blink();
         }
-        print(ladder + "\n");
       }
         
       else if(val == 4) {
@@ -1823,7 +1808,6 @@ class ButtonRec {
     int math = val * 12;
     ergeb = math + ladder;
     if(ergeb > 127){
-      print("this too high: " + ergeb + "\n");
       return ladderCheck(ladder, --val);
     }
     else return ergeb;
