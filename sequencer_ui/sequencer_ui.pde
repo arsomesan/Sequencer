@@ -453,6 +453,7 @@ void setup() {
               .addItem("Piano",0)
               .addItem("Prophet",1)
               .addItem("Dark Amb",2)
+              .addItem("Blade",3)
               ;
     
     //SlicerWave
@@ -531,6 +532,18 @@ void setup() {
     line(linepos, 440, linepos, 500);
     line(linepos, 650, linepos, 710);
     linepos = linepos + 240;
+  }
+  
+  int linepos2 = width - 360;
+  for(int i = 0; i < 3; i++){
+    strokeWeight(1);
+    stroke(#6272a4);
+    line(linepos2, 80, linepos2 + 100, 80);
+    line(linepos2, 200, linepos2, 200);
+    line(linepos2, 400, linepos2, 400);
+    line(linepos2, 600, linepos2, 600);
+    line(linepos2, 810, linepos2, 810);
+    linepos2 += 240;
   }
   //Add all Mutebuttons to MuteList
   int mutepos = 52;
@@ -1315,6 +1328,10 @@ class ButtonRec {
     bpmValue.setFloat("Bpm", _bpm);
     data.setJSONObject(21, bpmValue);
     
+    JSONObject synthVal = new JSONObject();
+    synthVal.setInt("Synth", synthValue);
+    data.setJSONObject(22, synthVal);
+    
     saveJSONArray(data, "data/new.json");
    }
   }
@@ -1416,7 +1433,8 @@ class ButtonRec {
         JSONObject waveValue = data.getJSONObject(20);
         slicerWaveValue = waveValue.getInt("Wave");
         slicerWave.setValue(slicerWaveValue);
-        
+       
+        //Load BPM Value
         JSONObject bpmValue = data.getJSONObject(21);
         _bpm = bpmValue.getFloat("Bpm");
         bps = _bpm/60;
@@ -1424,6 +1442,10 @@ class ButtonRec {
         bpmm = 1/temp*1000;
         cp5.getController("BPM").setValue(_bpm);
         timer = millis();
+        
+        //Load Synth Value
+        JSONObject synthVal = data.getJSONObject(22);
+        synthValue = synthVal.getInt("Synth");
    }
   }
     
