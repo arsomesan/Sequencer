@@ -19,6 +19,8 @@ float bpmm = (1/(120/60))*1000;
 float timer = 0;
 String pValue = "PAUSE";
 
+int last = 0;
+
 //initialite Controllers
 
 Knob baseAmpKnob;
@@ -687,8 +689,108 @@ void draw() {
       else baseMessage.add(0);
       
       //give Melody value for every iteration
-      if(aMldy.b && aMldy.mute != true) baseMessage.add(1);
-      else baseMessage.add(0);
+      //if(aMldy.b && aMldy.mute != true) baseMessage.add(1);
+      //else baseMessage.add(0);
+      
+      OscMessage mldyTimeMessage = new OscMessage("/mldytime");
+      if(aMldy.b && aMldy.mute != true && last == 0) {
+        mldyTimeMessage.add(1);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        last++;
+        print(1+"\n");
+      } else if(aMldy.b && aMldy.mute != true && last == 1) {
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(1);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+                        
+        last++;
+        print(2+"\n");
+      } else if(aMldy.b && aMldy.mute != true && last == 2) {
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(1);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        last++;
+        print(3+"\n");
+      } else if(aMldy.b && aMldy.mute != true && last == 3) {
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(1);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        last++;
+        print(4+"\n");
+      } else if(aMldy.b && aMldy.mute != true && last == 4) {
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(1);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        last++;
+        print(5+"\n");
+      } else if(aMldy.b && aMldy.mute != true && last == 5) {
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(1);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        last++;
+        print(6+"\n");
+      } else if(aMldy.b && aMldy.mute != true && last == 6) {
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(1);
+        mldyTimeMessage.add(0);
+        last++;
+        print(7+"\n");
+      } else if(aMldy.b && aMldy.mute != true && last == 7) {
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(1);
+        last = 0;
+        print(8+"\n");
+      } else {
+        print("nix\n");
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+      }
+      oscP5.send(mldyTimeMessage, myRemoteLocation);
+      
       
       //Send Instrument Booleans
       oscP5.send(baseMessage, myRemoteLocation);
@@ -1412,7 +1514,18 @@ class ButtonRec {
         baseMessage.add(0);
         baseMessage.add(0);
         baseMessage.add(0);
-        baseMessage.add(0);
+        
+        OscMessage mldyTimeMessage = new OscMessage("/mldytime");
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        
+        oscP5.send(mldyTimeMessage, myRemoteLocation);
         oscP5.send(baseMessage, myRemoteLocation);
         pValue = "PLAY";
         
