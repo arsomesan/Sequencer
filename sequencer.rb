@@ -5,9 +5,14 @@ live_loop :getbpm do
   use_real_time
   bpm = sync "/osc*/bpm"
   set :globalBpm, bpm[0]
-  set :synth, 1
-  print(get(:globalBpm))
 end
+
+live_loop :getsynth do
+  use_real_time
+  synth = sync "/osc*/synth"
+  set :synth, synth[0]
+end
+
 
 live_loop :getbool do
   use_real_time
@@ -135,6 +140,9 @@ live_loop :_melody do
       if (synth == 2)
         use_synth :dark_ambience
       end
+      if (synth == 3)
+        use_synth :blade
+      end
       play get(:tune), amp: (get(:globalAmp) * get(:mamp)) * mbool, attack: get(:mattk), decay: get(:mrel)
       sleep get(:globalBpm) * 2
     else
@@ -160,6 +168,9 @@ live_loop :_melody2 do
       if (synth == 2)
         use_synth :dark_ambience
       end
+      if (synth == 3)
+        use_synth :blade
+      end
       play get(:tune), amp: (get(:globalAmp) * get(:mamp)) * mbool, attack: get(:mattk), decay: get(:mrel)
       sleep get(:globalBpm) * 2
     else
@@ -183,6 +194,9 @@ live_loop :_melody3 do
       end
       if (synth == 2)
         use_synth :dark_ambience
+      end
+      if (synth == 3)
+        use_synth :blade
       end
       play get(:tune), amp: (get(:globalAmp) * get(:mamp)) * mbool, attack: get(:mattk), decay: get(:mrel)
       sleep get(:globalBpm) * 2
@@ -208,6 +222,9 @@ live_loop :_melody4 do
       if (synth == 2)
         use_synth :dark_ambience
       end
+      if (synth == 3)
+        use_synth :blade
+      end
       play get(:tune), amp: (get(:globalAmp) * get(:mamp)) * mbool, attack: get(:mattk), decay: get(:mrel)
       sleep get(:globalBpm) * 2
     else
@@ -231,6 +248,9 @@ live_loop :_melody5 do
       end
       if (synth == 2)
         use_synth :dark_ambience
+      end
+      if (synth == 3)
+        use_synth :blade
       end
       play get(:tune), amp: (get(:globalAmp) * get(:mamp)) * mbool, attack: get(:mattk), decay: get(:mrel)
       sleep get(:globalBpm) * 2
@@ -257,6 +277,9 @@ live_loop :_melody6 do
       if (synth == 2)
         use_synth :dark_ambience
       end
+      if (synth == 3)
+        use_synth :blade
+      end
       play get(:tune), amp: (get(:globalAmp) * get(:mamp)) * mbool, attack: get(:mattk), decay: get(:mrel)
       sleep get(:globalBpm) * 2
     else
@@ -281,6 +304,9 @@ live_loop :_melody7 do
       if (synth == 2)
         use_synth :dark_ambience
       end
+      if (synth == 3)
+        use_synth :blade
+      end
       play get(:tune), amp: (get(:globalAmp) * get(:mamp)) * mbool, attack: get(:mattk), decay: get(:mrel)
       sleep get(:globalBpm) * 2
     else
@@ -304,6 +330,9 @@ live_loop :_melody8 do
       end
       if (synth == 2)
         use_synth :dark_ambience
+      end
+      if (synth == 3)
+        use_synth :blade
       end
       play get(:tune), amp: (get(:globalAmp) * get(:mamp)) * mbool, attack: get(:mattk), decay: get(:mrel)
       sleep get(:globalBpm) * 2

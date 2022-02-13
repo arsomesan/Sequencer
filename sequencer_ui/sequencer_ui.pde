@@ -87,7 +87,12 @@ int sliderTicks1 = 120;
 
 Textlabel bpmLabel;
 
+RadioButton synthControl;
+
+int synthValue;
+
 RadioButton slicerWave;
+
 int slicerWaveValue;
 
 Toggle slicerToogle;
@@ -397,7 +402,7 @@ void setup() {
      .setRange(1,230)
      .setValue(120)
      .setDecimalPrecision(0)
-     .setNumberOfTickMarks(230)
+     .setNumberOfTickMarks(231)
      .snapToTickMarks(true)
      .setLabelVisible(false)
      .setColorForeground(#bd93f9)
@@ -434,6 +439,21 @@ void setup() {
           ;
           knobcount = knobcount + 60;
      }
+     
+     //Synth Control
+    synthControl = cp5.addRadioButton("Synth")
+              .setValue(0)
+              .setPosition(width - 360,565)
+              .setSize(20,20)
+              .setColorForeground(#50fa7b)
+              .setColorBackground(#44475a)
+              .setColorActive(#8be9fd)
+              .setItemsPerRow(4)
+              .setSpacingColumn(45)
+              .addItem("Piano",0)
+              .addItem("Prophet",1)
+              .addItem("Dark Amb",2)
+              ;
     
     //SlicerWave
     slicerWave = cp5.addRadioButton("Wave")
@@ -458,6 +478,7 @@ void setup() {
        .setColorActive(#8be9fd)
        .setMode(ControlP5.SWITCH)
        .setValue(false)
+       .setLabelVisible(false)
        ;
   
   //OSC initialize
@@ -581,8 +602,10 @@ void draw() {
     text("SNARE", 140, 310); 
     text("PERCS", 140, 430);
     text("MELODY", 140, 550);
-    text("SLICER CONTROL", width - 360, 585);
+    
     textSize(15);
+    text("SYNTH", width - 360, 557);
+    text("SLICER", width - 360, 612);
     text("ON", width - 125, 635);
     text("OFF", width - 40, 635);
     
@@ -844,6 +867,11 @@ void draw() {
       SliceMessage.add(slicerBool);
       oscP5.send(SliceMessage, myRemoteLocation);
       
+      //Send Synth Details over OSC
+      OscMessage SynthMessage = new OscMessage("/synth");
+      SynthMessage.add(synthValue);
+      oscP5.send(SynthMessage, myRemoteLocation);
+      
       
       //Blink previous Recs for every Iteration
       prevRec.time = false;
@@ -1048,6 +1076,10 @@ void Wave(int a){
 void Slicer(boolean theFlag) {
   if(theFlag) slicerBool = 1;
   else slicerBool = 0;
+}
+
+void Synth(int a) {
+  synthValue = a;
 }
 
 
