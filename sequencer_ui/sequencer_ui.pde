@@ -210,7 +210,7 @@ void setup() {
   mldyAmpKnob = cp5.addKnob("MAmp")
                .setRange(0,10)
                .setValue(1)
-               .setPosition(width - 360, 650)
+               .setPosition(width - 360, 670)
                .setRadius(10)
                .setHeight(30)
                .setSize(60,60)
@@ -323,7 +323,7 @@ void setup() {
   mldyAttackKnob = cp5.addKnob("MAttk")
                .setRange(0,1)
                .setValue(0)
-               .setPosition(width - 200, 650)
+               .setPosition(width - 200, 670)
                .setRadius(10)
                .setHeight(30)
                .setSize(60,60)
@@ -386,7 +386,7 @@ void setup() {
   mldyReleaseKnob = cp5.addKnob("MRel")
                .setRange(0,1)
                .setValue(0)
-               .setPosition(width - 280, 650)
+               .setPosition(width - 280, 670)
                .setRadius(10)
                .setHeight(30)
                .setSize(60,60)
@@ -443,13 +443,13 @@ void setup() {
      //Synth Control
     synthControl = cp5.addRadioButton("Synth")
               .setValue(0)
-              .setPosition(width - 360,565)
+              .setPosition(width - 360,585)
               .setSize(20,20)
               .setColorForeground(#50fa7b)
               .setColorBackground(#44475a)
               .setColorActive(#8be9fd)
               .setItemsPerRow(4)
-              .setSpacingColumn(45)
+              .setSpacingColumn(55)
               .addItem("Piano",0)
               .addItem("Prophet",1)
               .addItem("Dark Amb",2)
@@ -459,7 +459,7 @@ void setup() {
     //SlicerWave
     slicerWave = cp5.addRadioButton("Wave")
               .setValue(0)
-              .setPosition(width - 360,620)
+              .setPosition(width - 360,640)
               .setSize(20,20)
               .setColorForeground(#50fa7b)
               .setColorBackground(#44475a)
@@ -472,7 +472,7 @@ void setup() {
               .addItem("Sin",3)
               ;
     slicerToogle = cp5.addToggle("Slicer")
-       .setPosition(width-100,620)
+       .setPosition(width-100,640)
        .setSize(50,20)
        .setColorForeground(#50fa7b)
        .setColorBackground(#44475a)
@@ -530,21 +530,10 @@ void setup() {
     line(linepos, 200, linepos, 260);
     line(linepos, 320, linepos, 380);
     line(linepos, 440, linepos, 500);
-    line(linepos, 650, linepos, 710);
+    line(linepos, 565, linepos, 710);
     linepos = linepos + 240;
   }
   
-  int linepos2 = width - 360;
-  for(int i = 0; i < 3; i++){
-    strokeWeight(1);
-    stroke(#6272a4);
-    line(linepos2, 80, linepos2 + 100, 80);
-    line(linepos2, 200, linepos2, 200);
-    line(linepos2, 400, linepos2, 400);
-    line(linepos2, 600, linepos2, 600);
-    line(linepos2, 810, linepos2, 810);
-    linepos2 += 240;
-  }
   //Add all Mutebuttons to MuteList
   int mutepos = 52;
   int val = 1;
@@ -617,10 +606,10 @@ void draw() {
     text("MELODY", 140, 550);
     
     textSize(15);
-    text("SYNTH", width - 360, 557);
-    text("SLICER", width - 360, 612);
-    text("ON", width - 125, 635);
-    text("OFF", width - 40, 635);
+    text("SYNTH", width - 360, 577);
+    text("SLICER", width - 360, 632);
+    text("ON", width - 125, 655);
+    text("OFF", width - 40, 655);
     
     textSize(15);
     fill(#ffb86c);
@@ -661,6 +650,14 @@ void draw() {
     aSiCl.draw();
   }
 
+
+  int linepos2 = 185;
+  for(int i = 0; i < 4; i++){
+    strokeWeight(1);
+    stroke(#6272a4);
+    line(width - 360, linepos2, width - 60, linepos2);
+    linepos2 += 120;
+  }
 
   if(millis() > timer) {
     
