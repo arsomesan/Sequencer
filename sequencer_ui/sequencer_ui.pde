@@ -19,6 +19,8 @@ float bpmm = (1/(120/60))*1000;
 float timer = 0;
 String pValue = "PAUSE";
 
+int last = 0;
+
 //initialite Controllers
 
 Knob baseAmpKnob;
@@ -85,7 +87,12 @@ int sliderTicks1 = 120;
 
 Textlabel bpmLabel;
 
+RadioButton synthControl;
+
+int synthValue;
+
 RadioButton slicerWave;
+
 int slicerWaveValue;
 
 Toggle slicerToogle;
@@ -391,11 +398,11 @@ void setup() {
   //Slider
   cp5.addSlider("BPM")
      .setPosition(30, height - 60)
-     .setSize(250,40)
-     .setRange(1,250)
+     .setSize(230,40)
+     .setRange(1,230)
      .setValue(120)
      .setDecimalPrecision(0)
-     .setNumberOfTickMarks(250)
+     .setNumberOfTickMarks(231)
      .snapToTickMarks(true)
      .setLabelVisible(false)
      .setColorForeground(#bd93f9)
@@ -432,6 +439,22 @@ void setup() {
           ;
           knobcount = knobcount + 60;
      }
+     
+     //Synth Control
+    synthControl = cp5.addRadioButton("Synth")
+              .setValue(0)
+              .setPosition(width - 360,565)
+              .setSize(20,20)
+              .setColorForeground(#50fa7b)
+              .setColorBackground(#44475a)
+              .setColorActive(#8be9fd)
+              .setItemsPerRow(4)
+              .setSpacingColumn(45)
+              .addItem("Piano",0)
+              .addItem("Prophet",1)
+              .addItem("Dark Amb",2)
+              .addItem("Blade",3)
+              ;
     
     //SlicerWave
     slicerWave = cp5.addRadioButton("Wave")
@@ -456,6 +479,7 @@ void setup() {
        .setColorActive(#8be9fd)
        .setMode(ControlP5.SWITCH)
        .setValue(false)
+       .setLabelVisible(false)
        ;
   
   //OSC initialize
@@ -508,6 +532,18 @@ void setup() {
     line(linepos, 440, linepos, 500);
     line(linepos, 650, linepos, 710);
     linepos = linepos + 240;
+  }
+  
+  int linepos2 = width - 360;
+  for(int i = 0; i < 3; i++){
+    strokeWeight(1);
+    stroke(#6272a4);
+    line(linepos2, 80, linepos2 + 100, 80);
+    line(linepos2, 200, linepos2, 200);
+    line(linepos2, 400, linepos2, 400);
+    line(linepos2, 600, linepos2, 600);
+    line(linepos2, 810, linepos2, 810);
+    linepos2 += 240;
   }
   //Add all Mutebuttons to MuteList
   int mutepos = 52;
@@ -579,8 +615,10 @@ void draw() {
     text("SNARE", 140, 310); 
     text("PERCS", 140, 430);
     text("MELODY", 140, 550);
-    text("SLICER CONTROL", width - 360, 585);
+    
     textSize(15);
+    text("SYNTH", width - 360, 557);
+    text("SLICER", width - 360, 612);
     text("ON", width - 125, 635);
     text("OFF", width - 40, 635);
     
@@ -687,8 +725,108 @@ void draw() {
       else baseMessage.add(0);
       
       //give Melody value for every iteration
-      if(aMldy.b && aMldy.mute != true) baseMessage.add(1);
-      else baseMessage.add(0);
+      //if(aMldy.b && aMldy.mute != true) baseMessage.add(1);
+      //else baseMessage.add(0);
+      
+      OscMessage mldyTimeMessage = new OscMessage("/mldytime");
+      if(aMldy.b && aMldy.mute != true && last == 0) {
+        mldyTimeMessage.add(1);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        last++;
+        print(1+"\n");
+      } else if(aMldy.b && aMldy.mute != true && last == 1) {
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(1);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+                        
+        last++;
+        print(2+"\n");
+      } else if(aMldy.b && aMldy.mute != true && last == 2) {
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(1);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        last++;
+        print(3+"\n");
+      } else if(aMldy.b && aMldy.mute != true && last == 3) {
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(1);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        last++;
+        print(4+"\n");
+      } else if(aMldy.b && aMldy.mute != true && last == 4) {
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(1);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        last++;
+        print(5+"\n");
+      } else if(aMldy.b && aMldy.mute != true && last == 5) {
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(1);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        last++;
+        print(6+"\n");
+      } else if(aMldy.b && aMldy.mute != true && last == 6) {
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(1);
+        mldyTimeMessage.add(0);
+        last++;
+        print(7+"\n");
+      } else if(aMldy.b && aMldy.mute != true && last == 7) {
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(1);
+        last = 0;
+        print(8+"\n");
+      } else {
+        print("nix\n");
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+      }
+      oscP5.send(mldyTimeMessage, myRemoteLocation);
+      
       
       //Send Instrument Booleans
       oscP5.send(baseMessage, myRemoteLocation);
@@ -741,6 +879,11 @@ void draw() {
       SliceMessage.add(slicerWaveValue);
       SliceMessage.add(slicerBool);
       oscP5.send(SliceMessage, myRemoteLocation);
+      
+      //Send Synth Details over OSC
+      OscMessage SynthMessage = new OscMessage("/synth");
+      SynthMessage.add(synthValue);
+      oscP5.send(SynthMessage, myRemoteLocation);
       
       
       //Blink previous Recs for every Iteration
@@ -946,6 +1089,10 @@ void Wave(int a){
 void Slicer(boolean theFlag) {
   if(theFlag) slicerBool = 1;
   else slicerBool = 0;
+}
+
+void Synth(int a) {
+  synthValue = a;
 }
 
 
@@ -1181,6 +1328,10 @@ class ButtonRec {
     bpmValue.setFloat("Bpm", _bpm);
     data.setJSONObject(21, bpmValue);
     
+    JSONObject synthVal = new JSONObject();
+    synthVal.setInt("Synth", synthValue);
+    data.setJSONObject(22, synthVal);
+    
     saveJSONArray(data, "data/new.json");
    }
   }
@@ -1282,7 +1433,8 @@ class ButtonRec {
         JSONObject waveValue = data.getJSONObject(20);
         slicerWaveValue = waveValue.getInt("Wave");
         slicerWave.setValue(slicerWaveValue);
-        
+       
+        //Load BPM Value
         JSONObject bpmValue = data.getJSONObject(21);
         _bpm = bpmValue.getFloat("Bpm");
         bps = _bpm/60;
@@ -1290,6 +1442,10 @@ class ButtonRec {
         bpmm = 1/temp*1000;
         cp5.getController("BPM").setValue(_bpm);
         timer = millis();
+        
+        //Load Synth Value
+        JSONObject synthVal = data.getJSONObject(22);
+        synthValue = synthVal.getInt("Synth");
    }
   }
     
@@ -1412,7 +1568,18 @@ class ButtonRec {
         baseMessage.add(0);
         baseMessage.add(0);
         baseMessage.add(0);
-        baseMessage.add(0);
+        
+        OscMessage mldyTimeMessage = new OscMessage("/mldytime");
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        mldyTimeMessage.add(0);
+        
+        oscP5.send(mldyTimeMessage, myRemoteLocation);
         oscP5.send(baseMessage, myRemoteLocation);
         pValue = "PLAY";
         
