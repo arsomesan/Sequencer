@@ -2,7 +2,6 @@
 # JUMBOTUNE
 ### Sequencer using Sonic Pi and Processing.
 
-This Project is still a work in progress.
 _And will only work with Processing 3.5.4 or below_
 
 ## Description:
