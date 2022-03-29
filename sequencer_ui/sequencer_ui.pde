@@ -399,7 +399,7 @@ void setup() {
   cp5.addSlider("BPM")
      .setPosition(30, height - 60)
      .setSize(230,40)
-     .setRange(1,230)
+     .setRange(1,200)
      .setValue(120)
      .setDecimalPrecision(0)
      .setNumberOfTickMarks(231)
