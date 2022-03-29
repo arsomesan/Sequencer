@@ -41,4 +41,4 @@ While using the Sequencer you can play kick, hi hat, snare, percussion and a mel
 ## Claim
 - *color scheme from* <a href="https://draculatheme.com/contribute">*Dracula*</a> 
 - <a href="https://www.flaticon.com/free-icons/graph" title="graph icons">Graph icons created by Freepik - Flaticon</a>
-- <a href="https://github.com/senjellam"<*Name by senjellam*</a>
+- <a href="https://github.com/senjellam">*Name by senjellam*</a>
